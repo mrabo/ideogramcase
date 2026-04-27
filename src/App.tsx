@@ -170,7 +170,7 @@ function App() {
         <div className="upload-grid">
           <div className="panel logo-panel">
             <div className="section-heading">
-              <span>Logo Upload</span>
+              <span>Upload logo</span>
               <p>Upload your brand mark to anchor the aesthetic of your campaign.</p>
             </div>
 
@@ -200,7 +200,7 @@ function App() {
 
           <div className="panel inspiration-panel">
             <div className="section-heading">
-              <span>Add Inspiration</span>
+              <span>Add brand style references</span>
               <p>Select up to five images that capture the desired mood or color palette.</p>
             </div>
 
@@ -214,10 +214,8 @@ function App() {
                 aria-label="Upload reference images"
               >
                 <UploadIcon />
-                <strong>Drag & drop reference images</strong>
+                <strong>Drag & drop reference images (up to 5)</strong>
               </button>
-
-              <p className="reference-count">{inspirationImages.length} of {MAX_INSPIRATION_IMAGES} images uploaded</p>
 
               <div className="inspiration-grid">
                 {inspirationSlots.map((image, index) =>
@@ -270,7 +268,7 @@ function App() {
         </details>
 
         <div className="prompt-section">
-          <label htmlFor="campaign-prompt">Your image</label>
+          <label htmlFor="campaign-prompt">Describe image to generate</label>
           <textarea
             id="campaign-prompt"
             value={campaignPrompt}

@@ -178,9 +178,9 @@ textarea {
 
 .reference-upload-stack {
   --reference-thumb-size: 74px;
-  height: 178px;
+  min-height: 178px;
   display: grid;
-  grid-template-rows: 64px 18px var(--reference-thumb-size);
+  grid-template-rows: 64px var(--reference-thumb-size);
   gap: 11px;
 }
 
@@ -206,20 +206,11 @@ textarea {
   white-space: nowrap;
 }
 
-.reference-count {
-  margin: 0;
-  color: var(--ink-soft);
-  font-size: 0.78rem;
-  font-weight: 700;
-  line-height: 18px;
-  text-align: center;
-}
-
 .inspiration-grid {
   display: grid;
   grid-template-columns: repeat(5, var(--reference-thumb-size));
   gap: 12px;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .inspiration-tile {
@@ -504,12 +495,12 @@ textarea::placeholder {
   .reference-upload-stack {
     --reference-thumb-size: clamp(50px, 15vw, 74px);
     height: auto;
-    grid-template-rows: 68px auto var(--reference-thumb-size);
+    grid-template-rows: 68px var(--reference-thumb-size);
     gap: 10px;
   }
 
   .inspiration-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(5, var(--reference-thumb-size));
     gap: 8px;
   }
 
@@ -534,10 +525,6 @@ textarea::placeholder {
 
   .hero p {
     font-size: 1rem;
-  }
-
-  .inspiration-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   textarea {

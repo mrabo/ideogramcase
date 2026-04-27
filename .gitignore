@@ -3,5 +3,6 @@ dist
 .env
 .env.local
 .vercel
+.local-preview/
 *.tsbuildinfo
 .DS_Store
