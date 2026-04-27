@@ -57,10 +57,7 @@ button {
   line-height: 0.92;
   font-weight: 900;
   letter-spacing: 0;
-  background: linear-gradient(90deg, #a82a56 9%, #c8446e 45%, #f09b17 88%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: #333333;
 }
 
 .hero p {
@@ -68,46 +65,6 @@ button {
   color: var(--ink-soft);
   font-size: clamp(1.1rem, 2vw, 1.55rem);
   font-weight: 700;
-}
-
-.floral-accent {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  width: min(860px, 96vw);
-  transform: translateX(-50%);
-  opacity: 0.34;
-  pointer-events: none;
-}
-
-.floral-accent svg {
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-
-.vine {
-  fill: none;
-  stroke: var(--leaf);
-  stroke-width: 4;
-  stroke-linecap: round;
-}
-
-.vine-b {
-  stroke: #f5b634;
-  opacity: 0.55;
-  animation: boil 2.8s steps(2, end) infinite;
-}
-
-.petal-group {
-  fill: #c8446e;
-  transform-origin: center;
-  animation: petal-wiggle 3.2s ease-in-out infinite alternate;
-}
-
-.petal-two {
-  fill: #fcb812;
-  animation-delay: -1.2s;
 }
 
 .workspace {
@@ -127,6 +84,10 @@ button {
 .section-heading {
   padding: 0 8px;
   margin-bottom: 14px;
+}
+
+.upload-grid .section-heading {
+  min-height: 60px;
 }
 
 .section-heading span,
@@ -214,10 +175,50 @@ textarea {
   fill: var(--primary);
 }
 
+.reference-upload-stack {
+  --reference-thumb-size: 74px;
+  height: 178px;
+  display: grid;
+  grid-template-rows: 64px 18px var(--reference-thumb-size);
+  gap: 11px;
+}
+
+.reference-drop {
+  min-height: 0;
+  border-radius: 18px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.reference-drop .upload-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.reference-drop strong {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reference-count {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+}
+
 .inspiration-grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(74px, 1fr));
+  grid-template-columns: repeat(5, var(--reference-thumb-size));
   gap: 12px;
+  justify-content: space-between;
 }
 
 .inspiration-tile {
@@ -446,25 +447,6 @@ textarea::placeholder {
   font-size: 0.78rem;
 }
 
-@keyframes boil {
-  0%,
-  100% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(4px, -3px);
-  }
-}
-
-@keyframes petal-wiggle {
-  from {
-    transform: rotate(-2deg) scale(0.98);
-  }
-  to {
-    transform: rotate(3deg) scale(1.03);
-  }
-}
-
 @media (max-width: 760px) {
   .app-shell {
     padding: 44px 16px 56px;
@@ -479,8 +461,20 @@ textarea::placeholder {
     grid-template-columns: 1fr;
   }
 
+  .upload-grid .section-heading {
+    min-height: 0;
+  }
+
+  .reference-upload-stack {
+    --reference-thumb-size: clamp(50px, 15vw, 74px);
+    height: auto;
+    grid-template-rows: 68px auto var(--reference-thumb-size);
+    gap: 10px;
+  }
+
   .inspiration-grid {
-    grid-template-columns: repeat(3, minmax(76px, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .action-row {
@@ -507,7 +501,7 @@ textarea::placeholder {
   }
 
   .inspiration-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   textarea {

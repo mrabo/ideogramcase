@@ -22,48 +22,11 @@ function isImage(file: File) {
   return file.type.startsWith("image/");
 }
 
-function SparklesIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className="icon">
-      <path d="M11.6 2.6 13.5 8l5.4 1.9-5.4 1.9-1.9 5.4-1.9-5.4-5.4-1.9L9.7 8l1.9-5.4Zm7 11.4.9 2.4 2.3.8-2.3.8-.9 2.4-.8-2.4-2.4-.8 2.4-.8.8-2.4ZM5.5 15.2l.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7.7-1.9Z" />
-    </svg>
-  );
-}
-
-function FloralAccent() {
-  return (
-    <div className="floral-accent" aria-hidden="true">
-      <svg viewBox="0 0 320 160">
-        <path className="vine vine-a" d="M23 109 C73 43 135 133 185 65 C222 14 271 50 295 22" />
-        <path className="vine vine-b" d="M27 116 C79 52 136 142 190 71 C227 23 276 59 300 30" />
-        <g className="petal-group petal-one">
-          <ellipse cx="75" cy="63" rx="11" ry="22" />
-          <ellipse cx="75" cy="63" rx="11" ry="22" transform="rotate(66 75 63)" />
-          <ellipse cx="75" cy="63" rx="11" ry="22" transform="rotate(132 75 63)" />
-        </g>
-        <g className="petal-group petal-two">
-          <ellipse cx="244" cy="52" rx="9" ry="18" />
-          <ellipse cx="244" cy="52" rx="9" ry="18" transform="rotate(72 244 52)" />
-          <ellipse cx="244" cy="52" rx="9" ry="18" transform="rotate(144 244 52)" />
-        </g>
-      </svg>
-    </div>
-  );
-}
-
 function UploadIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" className="upload-icon">
       <path d="M12 3 6.8 8.2l1.4 1.4L11 6.8V16h2V6.8l2.8 2.8 1.4-1.4L12 3Z" />
       <path d="M5 15h2v4h10v-4h2v6H5v-6Z" />
-    </svg>
-  );
-}
-
-function AddImageIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className="small-icon">
-      <path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5Z" />
     </svg>
   );
 }
@@ -193,11 +156,9 @@ function App() {
 
   return (
     <main className="app-shell">
-      <FloralAccent />
-
       <header className="hero">
         <h1>BrandBloom</h1>
-        <p>Transform your vision into vibrant, brand-aligned imagery.</p>
+        <p>Transform your vision into brand-aligned imagery.</p>
       </header>
 
       <section className="workspace" aria-label="Campaign image generator">
@@ -238,29 +199,43 @@ function App() {
               <p>Select up to five images that capture the desired mood or color palette.</p>
             </div>
 
-            <div className="inspiration-grid">
-              {inspirationSlots.map((image, index) =>
-                image ? (
-                  <div className="inspiration-tile filled" key={image.id}>
-                    <img src={image.dataUrl} alt={image.name} />
-                    <button type="button" onClick={() => removeInspiration(image.id)} aria-label={`Remove ${image.name}`}>
-                      ×
+            <div className="reference-upload-stack">
+              <button
+                className="drop-zone reference-drop"
+                type="button"
+                onClick={() => inspirationInputRef.current?.click()}
+                onDragOver={(event) => event.preventDefault()}
+                onDrop={handleInspirationDrop}
+                aria-label="Upload reference images"
+              >
+                <UploadIcon />
+                <strong>Drag & drop reference images</strong>
+              </button>
+
+              <p className="reference-count">{inspirationImages.length} of {MAX_INSPIRATION_IMAGES} images uploaded</p>
+
+              <div className="inspiration-grid">
+                {inspirationSlots.map((image, index) =>
+                  image ? (
+                    <div className="inspiration-tile filled" key={image.id}>
+                      <img src={image.dataUrl} alt={image.name} />
+                      <button type="button" onClick={() => removeInspiration(image.id)} aria-label={`Remove ${image.name}`}>
+                        ×
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      className="inspiration-tile empty"
+                      key={`slot-${index}`}
+                      type="button"
+                      onClick={() => inspirationInputRef.current?.click()}
+                      aria-label={`Add inspiration image ${index + 1}`}
+                    >
+                      <PhotoIcon />
                     </button>
-                  </div>
-                ) : (
-                  <button
-                    className="inspiration-tile empty"
-                    key={`slot-${index}`}
-                    type="button"
-                    onClick={() => inspirationInputRef.current?.click()}
-                    onDragOver={(event) => event.preventDefault()}
-                    onDrop={handleInspirationDrop}
-                    aria-label={`Add inspiration image ${index + 1}`}
-                  >
-                    {index === inspirationImages.length ? <AddImageIcon /> : <PhotoIcon />}
-                  </button>
-                ),
-              )}
+                  ),
+                )}
+              </div>
             </div>
             <input
               ref={inspirationInputRef}
@@ -274,7 +249,7 @@ function App() {
         </div>
 
         <div className="prompt-section">
-          <label htmlFor="campaign-prompt">Describe your campaign image</label>
+          <label htmlFor="campaign-prompt">Describe your image</label>
           <textarea
             id="campaign-prompt"
             value={campaignPrompt}
@@ -285,16 +260,15 @@ function App() {
 
         <div className="action-row">
           <button className="generate-button" type="button" disabled={status === "generating"} onClick={handleGenerate}>
-            <SparklesIcon />
-            {status === "generating" ? "Generating..." : concepts.length ? "Regenerate Visuals" : "Generate Visuals"}
+            {status === "generating" ? "Generating..." : concepts.length ? "Regenerate" : "Generate"}
           </button>
           {message ? <p className={`status-message ${status}`}>{message}</p> : null}
         </div>
 
-        <section className="concepts-section" aria-label="Generated concepts">
+        <section className="concepts-section" aria-label="Your images">
           <div className="divider-title">
             <span />
-            <h2>Generated Concepts</h2>
+            <h2>Your images</h2>
             <span />
           </div>
 
