@@ -253,8 +253,8 @@ function App() {
           </div>
         </div>
 
-        <div className="prompt-section reference-description-section">
-          <label htmlFor="reference-description">Reference image description</label>
+        <details className="prompt-section reference-description-section">
+          <summary>Model data: Reference image description</summary>
           <textarea
             id="reference-description"
             value={geminiReferenceDescriptionHook.value}
@@ -267,7 +267,7 @@ function App() {
             }
             aria-label="Gemini reference image description"
           />
-        </div>
+        </details>
 
         <div className="prompt-section">
           <label htmlFor="campaign-prompt">Your image</label>
