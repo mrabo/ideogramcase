@@ -249,12 +249,11 @@ function App() {
         </div>
 
         <div className="prompt-section">
-          <label htmlFor="campaign-prompt">Describe your image</label>
+          <label htmlFor="campaign-prompt">Your image</label>
           <textarea
             id="campaign-prompt"
             value={campaignPrompt}
             onChange={(event) => setCampaignPrompt(event.target.value)}
-            placeholder="E.g., A minimalist scene featuring our skincare bottle nestled among soft pink peonies and mossy stones, bathed in soft golden hour light..."
           />
         </div>
 

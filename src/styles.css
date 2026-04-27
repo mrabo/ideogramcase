@@ -225,11 +225,12 @@ textarea {
   position: relative;
   aspect-ratio: 1;
   min-width: 0;
+  border-style: solid;
   border-radius: 16px;
   display: grid;
   place-items: center;
   overflow: hidden;
-  color: var(--yellow);
+  color: #333333;
   transition:
     border-color 180ms ease,
     background 180ms ease,
@@ -255,10 +256,14 @@ textarea {
   height: 26px;
   border: 0;
   border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   background: rgba(255, 255, 255, 0.9);
   color: var(--primary);
   font-size: 1.2rem;
-  line-height: 1;
+  line-height: 0;
 }
 
 .small-icon {
