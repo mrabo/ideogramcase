@@ -43,6 +43,7 @@ function PhotoIcon() {
 function App() {
   const [logo, setLogo] = useState<UploadImage | null>(null);
   const [inspirationImages, setInspirationImages] = useState<UploadImage[]>([]);
+  const [referenceImageDescription, setReferenceImageDescription] = useState("");
   const [campaignPrompt, setCampaignPrompt] = useState("");
   const [concepts, setConcepts] = useState<Concept[]>([]);
   const [status, setStatus] = useState<"idle" | "generating" | "success" | "error">("idle");
@@ -54,6 +55,10 @@ function App() {
     () => Array.from({ length: MAX_INSPIRATION_IMAGES }, (_, index) => inspirationImages[index] ?? null),
     [inspirationImages],
   );
+  const geminiReferenceDescriptionHook = {
+    value: referenceImageDescription,
+    setDescription: setReferenceImageDescription,
+  };
 
   async function setLogoFile(file: File) {
     if (!isImage(file)) {
@@ -246,6 +251,22 @@ function App() {
               onChange={handleInspirationInput}
             />
           </div>
+        </div>
+
+        <div className="prompt-section reference-description-section">
+          <label htmlFor="reference-description">Reference image description</label>
+          <textarea
+            id="reference-description"
+            value={geminiReferenceDescriptionHook.value}
+            readOnly
+            data-gemini-hook="reference-image-description"
+            placeholder={
+              inspirationImages.length
+                ? "Gemini will describe the uploaded reference images here."
+                : "Upload reference images to prepare a Gemini description."
+            }
+            aria-label="Gemini reference image description"
+          />
         </div>
 
         <div className="prompt-section">
