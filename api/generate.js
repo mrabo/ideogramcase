@@ -56,7 +56,7 @@ function dataUrlToPart(dataUrl) {
 function buildPrompt(campaignPrompt) {
   return [
     "Create one polished, professional campaign image.",
-    "Use the provided logo as brand identity context and the inspiration images for mood, palette, materials, lighting, and styling.",
+    "Use the inspiration images for mood, palette, materials, lighting, and styling.",
     "Do not explain the result. Return only the image output.",
     `Campaign image request: ${campaignPrompt}`,
   ].join("\n");
@@ -102,7 +102,7 @@ export default async function handler(request, response) {
     const GoogleGenAI = await loadGoogleGenAI();
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const model = process.env.GEMINI_IMAGE_MODEL || DEFAULT_MODEL;
-    const imageParts = [body.logo, ...(Array.isArray(body.inspirationImages) ? body.inspirationImages.slice(0, 5) : [])]
+    const imageParts = (Array.isArray(body.inspirationImages) ? body.inspirationImages.slice(0, 5) : [])
       .filter(Boolean)
       .map(dataUrlToPart)
       .filter(Boolean);
