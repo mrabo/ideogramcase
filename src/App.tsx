@@ -22,14 +22,6 @@ function isImage(file: File) {
   return file.type.startsWith("image/");
 }
 
-function placeholderImage(variant: 1 | 2) {
-  const accent = variant === 1 ? "#f0a64f" : "#7ccf8a";
-  const circleX = variant === 1 ? 330 : 570;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1125"><defs><radialGradient id="g" cx="50%" cy="38%" r="70%"><stop stop-color="#ffe9ba"/><stop offset=".58" stop-color="#f39ab3"/><stop offset="1" stop-color="#2f7d5b"/></radialGradient></defs><rect width="900" height="1125" rx="62" fill="url(#g)"/><circle cx="${circleX}" cy="390" r="170" fill="${accent}" opacity=".62"/><path d="M180 790c115-170 240-195 375-74 72 65 131 80 192 42" fill="none" stroke="#fff6da" stroke-width="38" stroke-linecap="round" opacity=".78"/><path d="M230 905c145-66 292-67 440-4" fill="none" stroke="#1e513f" stroke-width="26" stroke-linecap="round" opacity=".38"/></svg>`;
-
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
-}
-
 function UploadIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" className="upload-icon">
@@ -395,28 +387,30 @@ function App() {
           </button>
         </div>
 
-        <section className="concepts-section" aria-label="Your images">
-          <div className="divider-title">
-            <span />
-            <h2>Your images</h2>
-            <span />
-          </div>
+        {concepts.length ? (
+          <section className="concepts-section" aria-label="Your images">
+            <div className="divider-title">
+              <span />
+              <h2>Your images</h2>
+              <span />
+            </div>
 
-          <div className="concept-grid">
-            {(concepts.length ? concepts : defaultConcepts).map((concept, index) => (
-              <article className={`concept-card ${concepts.length ? "" : "placeholder"}`} key={concept.id}>
-                <button
-                  className="concept-image-button"
-                  type="button"
-                  onClick={() => setSelectedConcept({ imageUrl: concept.imageUrl, alt: `Concept ${index + 1}` })}
-                  aria-label={`Open concept ${index + 1} fullscreen`}
-                >
-                  <img src={concept.imageUrl} alt={`Concept ${index + 1}`} />
-                </button>
-              </article>
-            ))}
-          </div>
-        </section>
+            <div className="concept-grid">
+              {concepts.map((concept, index) => (
+                <article className="concept-card" key={concept.id}>
+                  <button
+                    className="concept-image-button"
+                    type="button"
+                    onClick={() => setSelectedConcept({ imageUrl: concept.imageUrl, alt: `Concept ${index + 1}` })}
+                    aria-label={`Open concept ${index + 1} fullscreen`}
+                  >
+                    <img src={concept.imageUrl} alt={`Concept ${index + 1}`} />
+                  </button>
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
       </section>
       </main>
 
@@ -431,18 +425,5 @@ function App() {
     </>
   );
 }
-
-const defaultConcepts: Concept[] = [
-  {
-    id: "default-1",
-    imageUrl: placeholderImage(1),
-    promptSummary: "Mock concept preview",
-  },
-  {
-    id: "default-2",
-    imageUrl: placeholderImage(2),
-    promptSummary: "Mock concept preview",
-  },
-];
 
 export default App;
