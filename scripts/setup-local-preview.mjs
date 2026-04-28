@@ -1,23 +1,5 @@
-//setup-local-preview.mjs prepares a self-contained local working copy of the app under .local-preview/app.
-//
-//It does four things:
-//Creates these folders if needed:
-//.local-preview/app
-//.local-preview/npm-cache
-//
-//Copies the project files needed to run the app into .local-preview/app, including:
-//package.json
-//package-lock.json
-//vite.config.ts
-//src/
-//api/
-//netlify/
-//TypeScript config files
-//
-//Copies .env or .env.local into the preview app if those files exist, so local API keys/settings are available there too.
-//
-//Then runs:
-//`npm ci --cache .local-preview/npm-cache` from inside `.local-preview/app` which means dependencies get installed into `.local-preview/app/node_modules`.
+// Prepares a self-contained local working copy of the app under .local-preview/app.
+// Dependencies are installed into .local-preview/app/node_modules.
 
 import { cp, mkdir, rm } from "node:fs/promises";
 import { join } from "node:path";
@@ -31,7 +13,6 @@ const npmCache = join(previewRoot, "npm-cache");
 const files = [
   "AGENTS.md",
   "index.html",
-  "netlify.toml",
   "package-lock.json",
   "package.json",
   "tsconfig.app.json",
@@ -40,7 +21,7 @@ const files = [
   "vite.config.ts",
 ];
 
-const dirs = ["api", "netlify", "src"];
+const dirs = ["api", "src"];
 
 async function copyIfPresent(source, destination) {
   try {
@@ -80,6 +61,9 @@ await mkdir(npmCache, { recursive: true });
 
 await rm(join(previewApp, "api"), { force: true, recursive: true });
 await rm(join(previewApp, "netlify"), { force: true, recursive: true });
+await rm(join(previewApp, "netlify.copied"), { force: true, recursive: true });
+await rm(join(previewApp, "netlify.toml"), { force: true });
+await rm(join(previewApp, "netlify.toml.copied"), { force: true });
 await rm(join(previewApp, "src"), { force: true, recursive: true });
 
 for (const file of files) {

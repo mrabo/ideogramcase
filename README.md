@@ -38,7 +38,7 @@ Run this again when the files in `.local-preview/app` need to be refreshed:
 
 - after downloading new updates from GitHub
 - after changing `package.json` or `package-lock.json`
-- after changing app files like `src/`, `api/`, `netlify/`, `index.html`, or `vite.config.ts`
+- after changing app files like `src/`, `api/`, `index.html`, or `vite.config.ts`
 
 ```bash
 npm run local:setup
@@ -51,4 +51,20 @@ npm run local:build
 npm run local:preview
 ```
 
-Deployment still uses the root project files and the committed `package-lock.json`.
+## Vercel Deployment
+
+This project is set up for Vercel using Vite for the frontend and the root `api/` folder for serverless functions.
+
+- Framework preset: Vite
+- Build command: `npm run build`
+- Output directory: `dist`
+- API routes:
+  - `/api/generate`
+  - `/api/describe-reference-images`
+- Required environment variable:
+  - `GEMINI_API_KEY`
+- Optional environment variables:
+  - `GEMINI_IMAGE_MODEL`
+  - `GEMINI_TEXT_MODEL`
+
+Deployment uses the root project files and the committed `package-lock.json`.
