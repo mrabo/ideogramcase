@@ -163,7 +163,7 @@ function App() {
     <main className="app-shell">
       <header className="hero">
         <h1>BrandBloom</h1>
-        <p>Transform your vision into brand-aligned imagery.</p>
+        <p>Create unique brand-aligned imagery.</p>
       </header>
 
       <section className="workspace" aria-label="Campaign image generator">
