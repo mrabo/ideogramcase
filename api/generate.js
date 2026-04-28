@@ -49,13 +49,34 @@ function dataUrlToPart(dataUrl) {
   };
 }
 
-function buildPrompt(campaignPrompt) {
+function buildPrompt(campaignPrompt, conceptNumber) {
   return [
-    "Create two distinct professional campaign image concepts for BrandBloom.",
+    `Create professional campaign image concept ${conceptNumber} of 2 for BrandBloom.`,
     "Use the provided logo as brand identity context and the inspiration images for mood, palette, materials, lighting, and styling.",
+    conceptNumber === 1
+      ? "Make this first concept bright, direct, and product-forward."
+      : "Make this second concept visually distinct, more editorial, and still on-brand.",
     "Do not explain the result. Return image outputs.",
     `Campaign image request: ${campaignPrompt}`,
   ].join("\n");
+}
+
+async function generateConceptImage(ai, model, imageParts, campaignPrompt, conceptNumber) {
+  const result = await ai.models.generateContent({
+    model,
+    contents: [{ text: buildPrompt(campaignPrompt, conceptNumber) }, ...imageParts],
+  });
+  const part = result.candidates?.[0]?.content?.parts?.find((candidatePart) => candidatePart.inlineData?.data);
+
+  if (!part?.inlineData?.data) {
+    return null;
+  }
+
+  return {
+    id: `gemini-${Date.now()}-${conceptNumber}`,
+    imageUrl: `data:${part.inlineData.mimeType || "image/png"};base64,${part.inlineData.data}`,
+    promptSummary: campaignPrompt.slice(0, 92),
+  };
 }
 
 export default async function handler(request, response) {
@@ -85,22 +106,11 @@ export default async function handler(request, response) {
       .map(dataUrlToPart)
       .filter(Boolean);
 
-    const result = await ai.models.generateContent({
-      model,
-      contents: [{ text: buildPrompt(campaignPrompt) }, ...imageParts],
-    });
+    const concepts = (
+      await Promise.all([1, 2].map((conceptNumber) => generateConceptImage(ai, model, imageParts, campaignPrompt, conceptNumber)))
+    ).filter(Boolean);
 
-    const parts = result.candidates?.[0]?.content?.parts ?? [];
-    const concepts = parts
-      .filter((part) => part.inlineData?.data)
-      .slice(0, 2)
-      .map((part, index) => ({
-        id: `gemini-${Date.now()}-${index + 1}`,
-        imageUrl: `data:${part.inlineData.mimeType || "image/png"};base64,${part.inlineData.data}`,
-        promptSummary: campaignPrompt.slice(0, 92),
-      }));
-
-    if (concepts.length === 0) {
+    if (concepts.length < 2) {
       return response.status(502).json({ error: "No image concepts came back. Try regenerating." });
     }
 
