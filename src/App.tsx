@@ -1,4 +1,4 @@
-import { ChangeEvent, DragEvent, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, DragEvent, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Concept, describeReferenceImages, generateConcepts } from "./api";
 
 type UploadImage = {
@@ -51,6 +51,7 @@ function App() {
   const [message, setMessage] = useState("");
   const logoInputRef = useRef<HTMLInputElement>(null);
   const inspirationInputRef = useRef<HTMLInputElement>(null);
+  const referenceDescriptionRef = useRef<HTMLTextAreaElement>(null);
 
   const inspirationSlots = useMemo(
     () => Array.from({ length: MAX_INSPIRATION_IMAGES }, (_, index) => inspirationImages[index] ?? null),
@@ -60,6 +61,20 @@ function App() {
     value: referenceImageDescription,
     setDescription: setReferenceImageDescription,
   };
+
+  function resizeReferenceDescription() {
+    const textarea = referenceDescriptionRef.current;
+    if (!textarea) {
+      return;
+    }
+
+    textarea.style.height = "auto";
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }
+
+  useLayoutEffect(() => {
+    resizeReferenceDescription();
+  }, [referenceImageDescription, referenceDescriptionStatus]);
 
   useEffect(() => {
     let isCurrent = true;
@@ -289,9 +304,23 @@ function App() {
           </div>
         </div>
 
-        <details className="prompt-section reference-description-section">
-          <summary>Model data: Reference image description</summary>
+        <details
+          className="prompt-section reference-description-section"
+          onToggle={() => {
+            requestAnimationFrame(resizeReferenceDescription);
+          }}
+        >
+          <summary>
+            Model data: Reference image description
+            {referenceDescriptionStatus === "describing" ? <span className="reference-description-spinner" aria-label="Loading" /> : null}
+            {referenceDescriptionStatus === "idle" && referenceImageDescription ? (
+              <span className="reference-description-check" aria-label="Complete">
+                ✓
+              </span>
+            ) : null}
+          </summary>
           <textarea
+            ref={referenceDescriptionRef}
             id="reference-description"
             value={geminiReferenceDescriptionHook.value}
             readOnly

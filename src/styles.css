@@ -311,6 +311,34 @@ textarea {
   transform: rotate(90deg);
 }
 
+.reference-description-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(168, 42, 86, 0.22);
+  border-top-color: var(--primary);
+  border-radius: 999px;
+  animation: reference-description-spin 700ms linear infinite;
+}
+
+@keyframes reference-description-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.reference-description-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--leaf);
+  color: #ffffff;
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
 textarea {
   display: block;
   width: 100%;
@@ -333,6 +361,11 @@ textarea:focus {
 
 textarea::placeholder {
   color: rgba(87, 65, 69, 0.4);
+}
+
+.reference-description-section textarea {
+  overflow: hidden;
+  resize: none;
 }
 
 .action-row {

@@ -6,7 +6,9 @@ const REFERENCE_DESCRIPTION_PROMPT = [
   "Look at the uploaded images and write a paragraph describing the visual characteristics of them.",
   "Write it in a way that could describe a wide variety of images.",
   "For example, do not specify things like composition because differently composed images can still have the same style.",
-  "Write in bullet points.",
+  "Return only plain-text bullet lines.",
+  "Each line must be a simple bullet, such as a dash or an asterisk followed by a space.",
+  "Do not include headings, introductions, bold text, italics, numbered lists, or any other formatting.",
 ].join(" ");
 
 async function loadGoogleGenAI() {
@@ -48,6 +50,28 @@ function mockDescription() {
   ].join("\n");
 }
 
+function normalizeBulletText(text) {
+  return text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => !/^here (are|is)\b/i.test(line))
+    .filter((line) => !/^visual characteristics\b/i.test(line))
+    .map((line) => {
+      const bulletMatch = /^\s*([-*•])\s+(.+)$/.exec(line);
+      const marker = bulletMatch?.[1] === "*" ? "*" : "-";
+      const text = (bulletMatch?.[2] ?? line.replace(/^\s*\d+[.)]\s*/, ""))
+        .replace(/\*\*/g, "")
+        .replace(/__/g, "")
+        .replace(/[*_`]/g, "")
+        .trim();
+
+      return text ? `${marker} ${text}` : "";
+    })
+    .filter(Boolean)
+    .join("\n");
+}
+
 export async function handler(event) {
   if (event.httpMethod !== "POST") {
     return json(405, { error: "Use POST to describe reference images." });
@@ -76,7 +100,7 @@ export async function handler(event) {
       model,
       contents: [{ text: REFERENCE_DESCRIPTION_PROMPT }, ...imageParts],
     });
-    const description = result.text?.trim();
+    const description = normalizeBulletText(result.text ?? "");
 
     if (!description) {
       return json(502, { error: "No reference description came back. Try uploading again." });

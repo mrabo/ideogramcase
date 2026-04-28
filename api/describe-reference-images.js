@@ -4,9 +4,8 @@ import { pathToFileURL } from "node:url";
 const DEFAULT_MODEL = "gemini-2.5-flash";
 const REFERENCE_DESCRIPTION_PROMPT = [
   "Look at the uploaded images and write a paragraph describing the visual characteristics of them.",
-  "Write it in a way that could describe a wide variety of images.",
-  "For example, do not specify things like composition because differently composed images can still have the same style.",
-  "Write in bullet points.",
+  "The description should help an image generator create new images in a similar style.",
+  "Do not include Markdown formatting for headings, bold text, italics.",
 ].join(" ");
 
 async function loadGoogleGenAI() {
@@ -44,6 +43,28 @@ function mockDescription() {
   ].join("\n");
 }
 
+function normalizeBulletText(text) {
+  return text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => !/^here (are|is)\b/i.test(line))
+    .filter((line) => !/^visual characteristics\b/i.test(line))
+    .map((line) => {
+      const bulletMatch = /^\s*([-*•])\s+(.+)$/.exec(line);
+      const marker = bulletMatch?.[1] === "*" ? "*" : "-";
+      const text = (bulletMatch?.[2] ?? line.replace(/^\s*\d+[.)]\s*/, ""))
+        .replace(/\*\*/g, "")
+        .replace(/__/g, "")
+        .replace(/[*_`]/g, "")
+        .trim();
+
+      return text ? `${marker} ${text}` : "";
+    })
+    .filter(Boolean)
+    .join("\n");
+}
+
 export default async function handler(request, response) {
   if (request.method !== "POST") {
     response.setHeader("Allow", "POST");
@@ -73,7 +94,7 @@ export default async function handler(request, response) {
       model,
       contents: [{ text: REFERENCE_DESCRIPTION_PROMPT }, ...imageParts],
     });
-    const description = result.text?.trim();
+    const description = normalizeBulletText(result.text ?? "");
 
     if (!description) {
       return response.status(502).json({ error: "No reference description came back. Try uploading again." });
