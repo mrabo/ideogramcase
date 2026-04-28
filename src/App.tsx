@@ -294,7 +294,7 @@ function App() {
           <div className="panel inspiration-panel">
             <div className="section-heading">
               <span>Add brand style references</span>
-              <p>Select up to five images that capture the desired style.</p>
+              <p>Select up to five images that capture your desired visual style.</p>
             </div>
 
             <div className="reference-upload-stack">
@@ -333,7 +333,7 @@ function App() {
 
               {inspirationImages.length ? (
                 <button className="clear-references-button" type="button" onClick={clearInspirationImages}>
-                  Clear
+                  Clear all
                 </button>
               ) : null}
             </div>
