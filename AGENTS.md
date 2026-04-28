@@ -33,4 +33,7 @@ The application is a single-page interface with a linear, focused flow:
 - Stateless experience (no saved library in this phase).
 - Focused exclusively on the core generation loop.
 
-.
+## Implementation details
+- Do not install npm packages on the local machine.
+- All node packages/modules must be installed in the `.local-preview` directory.
+- The app should run on localhost through `.local-preview` for editing and also be ready for deployment. 

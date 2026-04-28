@@ -1,6 +1,16 @@
-import { GoogleGenAI } from "@google/genai";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 
 const DEFAULT_MODEL = "gemini-3.1-flash-image-preview";
+
+async function loadGoogleGenAI() {
+  try {
+    return (await import("@google/genai")).GoogleGenAI;
+  } catch (error) {
+    const localInstallUrl = pathToFileURL(join(process.cwd(), "node_modules/@google/genai/dist/node/index.mjs")).href;
+    return (await import(localInstallUrl)).GoogleGenAI;
+  }
+}
 
 const conceptOne =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1125'%3E%3Cdefs%3E%3CradialGradient id='g' cx='45%25' cy='37%25' r='70%25'%3E%3Cstop stop-color='%232b5b67'/%3E%3Cstop offset='.55' stop-color='%230d1d24'/%3E%3Cstop offset='1' stop-color='%23050a10'/%3E%3C/radialGradient%3E%3ClinearGradient id='p' x1='0' x2='1'%3E%3Cstop stop-color='%23e9a6b6'/%3E%3Cstop offset='1' stop-color='%23f7c762'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='900' height='1125' rx='62' fill='url(%23g)'/%3E%3Cg fill='none' stroke='%237fd9ec' opacity='.5' stroke-width='3'%3E%3Cpath d='M255 355c78-57 151-52 221 15s135 76 194 27' stroke-dasharray='11 17'/%3E%3Ccircle cx='255' cy='355' r='15'/%3E%3Ccircle cx='475' cy='370' r='17'/%3E%3Ccircle cx='670' cy='397' r='15'/%3E%3C/g%3E%3Crect x='255' y='575' width='390' height='210' rx='28' fill='%23102027' stroke='%238cc8d2' stroke-width='4'/%3E%3Crect x='312' y='520' width='265' height='160' rx='16' fill='%23234657' stroke='%2397dcea' stroke-width='5'/%3E%3Crect x='340' y='548' width='210' height='100' rx='10' fill='%230e2635'/%3E%3Cpath d='M302 786h296l50 86H244z' fill='%23080c11'/%3E%3Cellipse cx='450' cy='904' rx='260' ry='28' fill='%23010205' opacity='.7'/%3E%3Cpath d='M330 880c80 24 175 23 263-1' stroke='url(%23p)' stroke-width='7' stroke-linecap='round' opacity='.55'/%3E%3Ctext x='450' y='995' text-anchor='middle' fill='%239bc8d2' font-family='Arial' font-size='42' font-weight='700' letter-spacing='8'%3ECONCEPT 1%3C/text%3E%3C/svg%3E";
@@ -66,6 +76,7 @@ export async function handler(event) {
   }
 
   try {
+    const GoogleGenAI = await loadGoogleGenAI();
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const model = process.env.GEMINI_IMAGE_MODEL || DEFAULT_MODEL;
     const imageParts = [body.logo, ...(Array.isArray(body.inspirationImages) ? body.inspirationImages.slice(0, 5) : [])]

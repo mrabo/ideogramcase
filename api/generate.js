@@ -1,6 +1,16 @@
-import { GoogleGenAI } from "@google/genai";
+import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 
 const DEFAULT_MODEL = "gemini-3.1-flash-image-preview";
+
+async function loadGoogleGenAI() {
+  try {
+    return (await import("@google/genai")).GoogleGenAI;
+  } catch (error) {
+    const localInstallUrl = pathToFileURL(join(process.cwd(), "node_modules/@google/genai/dist/node/index.mjs")).href;
+    return (await import(localInstallUrl)).GoogleGenAI;
+  }
+}
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -67,6 +77,7 @@ export default async function handler(request, response) {
   }
 
   try {
+    const GoogleGenAI = await loadGoogleGenAI();
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     const model = process.env.GEMINI_IMAGE_MODEL || DEFAULT_MODEL;
     const imageParts = [body.logo, ...(Array.isArray(body.inspirationImages) ? body.inspirationImages.slice(0, 5) : [])]
