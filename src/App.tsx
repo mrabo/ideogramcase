@@ -39,6 +39,15 @@ function CheckIcon() {
   );
 }
 
+function CloseIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="m6.4 5 12.6 12.6-1.4 1.4L5 6.4 6.4 5Z" />
+      <path d="M17.6 5 19 6.4 6.4 19 5 17.6 17.6 5Z" />
+    </svg>
+  );
+}
+
 function PhotoIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" className="small-icon">
@@ -55,6 +64,7 @@ function App() {
   const [referenceDescriptionStatus, setReferenceDescriptionStatus] = useState<"idle" | "describing" | "error">("idle");
   const [campaignPrompt, setCampaignPrompt] = useState("");
   const [concepts, setConcepts] = useState<Concept[]>([]);
+  const [selectedConcept, setSelectedConcept] = useState<{ imageUrl: string; alt: string } | null>(null);
   const [status, setStatus] = useState<"idle" | "generating" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
   const logoInputRef = useRef<HTMLInputElement>(null);
@@ -120,6 +130,26 @@ function App() {
       isCurrent = false;
     };
   }, [inspirationImages]);
+
+  useEffect(() => {
+    if (!selectedConcept) {
+      return;
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setSelectedConcept(null);
+      }
+    }
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedConcept]);
 
   async function setLogoFile(file: File) {
     if (!isImage(file)) {
@@ -221,7 +251,8 @@ function App() {
   }
 
   return (
-    <main className="app-shell">
+    <>
+      <main className="app-shell">
       <header className="hero">
         <h1>BrandBloom</h1>
         <p>Create unique brand-aligned imagery.</p>
@@ -319,7 +350,7 @@ function App() {
           }}
         >
           <summary>
-            Model data: Reference image description
+            Reference image description (debug)
             {referenceDescriptionStatus === "describing" ? <span className="reference-description-spinner" aria-label="Loading" /> : null}
             {referenceDescriptionStatus === "idle" && referenceImageDescription ? (
               <span aria-label="Complete">
@@ -347,7 +378,7 @@ function App() {
         </details>
 
         <div className="prompt-section">
-          <label htmlFor="campaign-prompt">Describe image to generate</label>
+          <label htmlFor="campaign-prompt">Describe the image you want</label>
           <textarea
             id="campaign-prompt"
             value={campaignPrompt}
@@ -372,17 +403,30 @@ function App() {
           <div className="concept-grid">
             {(concepts.length ? concepts : defaultConcepts).map((concept, index) => (
               <article className={`concept-card ${concepts.length ? "" : "placeholder"}`} key={concept.id}>
-                <img src={concept.imageUrl} alt={`Concept ${index + 1}`} />
-                <div className="concept-caption">
-                  <strong>Concept {index + 1}</strong>
-                  <span>{concept.promptSummary}</span>
-                </div>
+                <button
+                  className="concept-image-button"
+                  type="button"
+                  onClick={() => setSelectedConcept({ imageUrl: concept.imageUrl, alt: `Concept ${index + 1}` })}
+                  aria-label={`Open concept ${index + 1} fullscreen`}
+                >
+                  <img src={concept.imageUrl} alt={`Concept ${index + 1}`} />
+                </button>
               </article>
             ))}
           </div>
         </section>
       </section>
-    </main>
+      </main>
+
+      {selectedConcept ? (
+        <div className="image-overlay" role="dialog" aria-modal="true" aria-label={selectedConcept.alt} onClick={() => setSelectedConcept(null)}>
+          <button className="image-overlay-close" type="button" onClick={() => setSelectedConcept(null)} aria-label="Close fullscreen image">
+            <CloseIcon />
+          </button>
+          <img src={selectedConcept.imageUrl} alt={selectedConcept.alt} onClick={(event) => event.stopPropagation()} />
+        </div>
+      ) : null}
+    </>
   );
 }
 

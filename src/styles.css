@@ -2,18 +2,22 @@
 
 :root {
   font-family: "Plus Jakarta Sans", system-ui, sans-serif;
-  color: #2d171f;
+  color: #24272b;
   background: #ffffff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  --primary: #a82a56;
-  --primary-bright: #c8446e;
-  --yellow: #fcb812;
-  --leaf: #8ac58a;
-  --ink-soft: #574145;
-  --outline: #ddbfc4;
-  --paper: #fffdf8;
+  --accent: #05aff2;
+  --accent-dark: #047db3;
+  --accent-soft: #dff5ff;
+  --primary: var(--accent);
+  --primary-bright: #42c5ff;
+  --yellow: #bfeaff;
+  --success: #12b76a;
+  --error: #d92d20;
+  --ink-soft: #667085;
+  --outline: #d0d5dd;
+  --paper: #ffffff;
 }
 
 * {
@@ -24,7 +28,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #ffffff;
+  background: var(--paper);
 }
 
 button,
@@ -57,7 +61,7 @@ button {
   line-height: 0.92;
   font-weight: 900;
   letter-spacing: 0;
-  color: #333333;
+  color: #2b2f36;
 }
 
 .hero p {
@@ -104,7 +108,7 @@ button {
 
 .section-heading p {
   margin: 6px 0 0;
-  color: rgba(87, 65, 69, 0.72);
+  color: rgba(102, 112, 133, 0.82);
   font-size: 0.82rem;
   line-height: 1.45;
 }
@@ -113,8 +117,8 @@ button {
 .inspiration-tile,
 textarea {
   border: 2px dashed var(--outline);
-  background: rgba(255, 253, 248, 0.74);
-  box-shadow: 0 18px 52px rgba(168, 42, 86, 0.08);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 52px rgba(36, 39, 43, 0.07);
 }
 
 .drop-zone {
@@ -125,7 +129,7 @@ textarea {
   place-items: center;
   gap: 8px;
   padding: 28px;
-  color: #3a1826;
+  color: #24272b;
   transition:
     border-color 180ms ease,
     background 180ms ease,
@@ -135,7 +139,7 @@ textarea {
 .drop-zone:hover,
 .inspiration-tile:hover {
   border-color: var(--primary-bright);
-  background: #fffaf2;
+  background: var(--accent-soft);
   transform: translateY(-1px);
 }
 
@@ -144,7 +148,7 @@ textarea {
 }
 
 .drop-zone small {
-  color: #8a7175;
+  color: #7a8494;
   font-size: 0.68rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -222,7 +226,7 @@ textarea {
   display: grid;
   place-items: center;
   overflow: hidden;
-  color: #333333;
+  color: #2b2f36;
   transition:
     border-color 180ms ease,
     background 180ms ease,
@@ -231,7 +235,7 @@ textarea {
 
 .inspiration-tile.filled {
   border: 0;
-  box-shadow: 0 16px 36px rgba(45, 23, 31, 0.14);
+  box-shadow: 0 16px 36px rgba(36, 39, 43, 0.12);
 }
 
 .inspiration-tile img {
@@ -314,7 +318,7 @@ textarea {
 .reference-description-spinner {
   width: 14px;
   height: 14px;
-  border: 2px solid rgba(168, 42, 86, 0.22);
+  border: 2px solid rgba(5, 175, 242, 0.2);
   border-top-color: var(--primary);
   border-radius: 999px;
   animation: reference-description-spin 700ms linear infinite;
@@ -330,7 +334,7 @@ textarea {
   width: 17px;
   height: 17px;
   display: block;
-  fill: var(--leaf);
+  fill: var(--success);
 }
 
 textarea {
@@ -339,22 +343,22 @@ textarea {
   min-height: 162px;
   resize: vertical;
   border-style: solid;
-  border-color: rgba(221, 191, 196, 0.48);
+  border-color: rgba(208, 213, 221, 0.92);
   border-radius: 28px;
   padding: 28px 30px;
-  color: #3a1826;
+  color: #24272b;
   font-size: 1rem;
   line-height: 1.7;
   outline: none;
 }
 
 textarea:focus {
-  border-color: #fcb812;
-  box-shadow: 0 0 0 4px rgba(252, 184, 18, 0.16), 0 18px 52px rgba(168, 42, 86, 0.08);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(5, 175, 242, 0.16), 0 18px 52px rgba(36, 39, 43, 0.07);
 }
 
 textarea::placeholder {
-  color: rgba(87, 65, 69, 0.4);
+  color: rgba(102, 112, 133, 0.54);
 }
 
 .reference-description-section textarea {
@@ -379,10 +383,10 @@ textarea::placeholder {
   justify-content: center;
   gap: 12px;
   min-width: 254px;
-  background: linear-gradient(90deg, var(--primary) 0%, var(--primary-bright) 72%, #dc7b35 132%);
+  background: var(--accent);
   color: #ffffff;
   font-weight: 800;
-  box-shadow: 0 20px 36px rgba(168, 42, 86, 0.26);
+  box-shadow: 0 10px 20px rgba(5, 175, 242, 0.2);
   transition:
     transform 180ms ease,
     box-shadow 180ms ease,
@@ -391,7 +395,7 @@ textarea::placeholder {
 
 .generate-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 24px 42px rgba(168, 42, 86, 0.32);
+  box-shadow: 0 12px 24px rgba(5, 175, 242, 0.26);
 }
 
 .generate-button:disabled {
@@ -414,11 +418,11 @@ textarea::placeholder {
 }
 
 .status-message.error {
-  color: #ba1a1a;
+  color: var(--error);
 }
 
 .status-message.success {
-  color: #3f7d3f;
+  color: var(--success);
 }
 
 .divider-title {
@@ -431,7 +435,7 @@ textarea::placeholder {
 
 .divider-title span {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(221, 191, 196, 0.72), transparent);
+  background: linear-gradient(90deg, transparent, rgba(208, 213, 221, 0.92), transparent);
 }
 
 .divider-title h2 {
@@ -449,43 +453,79 @@ textarea::placeholder {
   overflow: hidden;
   border: 5px solid #fff;
   border-radius: 34px;
-  box-shadow: 0 26px 54px rgba(138, 113, 117, 0.24);
+  box-shadow: 0 26px 54px rgba(36, 39, 43, 0.16);
   background: rgba(255, 255, 255, 0.92);
 }
 
-.concept-card img {
+.concept-image-button {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  display: block;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.concept-image-button:focus-visible {
+  outline: 4px solid rgba(5, 175, 242, 0.42);
+  outline-offset: -4px;
+}
+
+.concept-image-button img {
   width: 100%;
   aspect-ratio: 4 / 5;
   height: auto;
   display: block;
   object-fit: cover;
-  transition: transform 600ms ease;
 }
 
-.concept-card:hover img {
-  transform: scale(1.035);
-}
-
-.concept-caption {
+.image-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: start;
-  gap: 12px;
-  padding: 14px 16px 16px;
-  color: #3a1826;
+  place-items: center;
+  padding: 36px;
+  background: rgba(0, 0, 0, 0.88);
+  cursor: zoom-out;
 }
 
-.concept-caption strong {
-  white-space: nowrap;
+.image-overlay img {
+  max-width: min(100%, 92vh);
+  max-height: 92vh;
+  display: block;
+  border: 5px solid #fff;
+  border-radius: 24px;
+  box-shadow: 0 30px 90px rgba(20, 7, 12, 0.45);
+  cursor: default;
 }
 
-.concept-caption span {
-  min-width: 0;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  color: var(--ink-soft);
-  font-size: 0.78rem;
-  line-height: 1.35;
+.image-overlay-close {
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: #24272b;
+  box-shadow: 0 14px 32px rgba(20, 7, 12, 0.28);
+  cursor: pointer;
+}
+
+.image-overlay-close svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.image-overlay-close:focus-visible {
+  outline: 4px solid rgba(5, 175, 242, 0.72);
+  outline-offset: 3px;
 }
 
 @media (max-width: 760px) {
@@ -529,6 +569,21 @@ textarea::placeholder {
 
   .divider-title {
     gap: 12px;
+  }
+
+  .image-overlay {
+    padding: 18px;
+  }
+
+  .image-overlay img {
+    max-width: 100%;
+    max-height: 88vh;
+    border-radius: 18px;
+  }
+
+  .image-overlay-close {
+    top: 14px;
+    right: 14px;
   }
 }
 
