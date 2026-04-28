@@ -37,3 +37,4 @@ The application is a single-page interface with a linear, focused flow:
 - Do not install npm packages on the local machine.
 - All node packages/modules must be installed in the `.local-preview` directory.
 - The app should run on localhost through `.local-preview` for editing and also be ready for deployment. 
+- When editing app source, keep the root project files and `.local-preview/app` copy in sync, or run `npm run local:setup` after root edits before testing through localhost.

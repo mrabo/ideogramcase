@@ -257,20 +257,34 @@ textarea {
 
 .inspiration-tile.filled button {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 26px;
-  height: 26px;
+  top: 4px;
+  right: 4px;
+  width: 24px;
+  height: 24px;
   border: 0;
-  border-radius: 999px;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  background: rgba(255, 255, 255, 0.9);
+  background: transparent;
+}
+
+.remove-image-icon {
+  display: block;
+  width: 22px;
+  height: 22px;
   color: var(--primary);
-  font-size: 1.2rem;
-  line-height: 0;
+  filter: drop-shadow(0 2px 5px rgba(36, 39, 43, 0.12));
+}
+
+.remove-image-icon circle {
+  fill: rgba(255, 255, 255, 0.94);
+}
+
+.remove-image-icon line {
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
 }
 
 .clear-references-button {

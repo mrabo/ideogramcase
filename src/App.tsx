@@ -48,6 +48,16 @@ function CloseIcon() {
   );
 }
 
+function RemoveImageIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="remove-image-icon">
+      <circle cx="12" cy="12" r="11" />
+      <line x1="8" y1="8" x2="16" y2="16" />
+      <line x1="16" y1="8" x2="8" y2="16" />
+    </svg>
+  );
+}
+
 function PhotoIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" className="small-icon">
@@ -255,7 +265,7 @@ function App() {
           <div className="panel logo-panel">
             <div className="section-heading">
               <span>Upload logo</span>
-              <p>Upload your brand mark to anchor the aesthetic of your campaign.</p>
+              <p>Upload your logo to include it in images.</p>
             </div>
 
             <button
@@ -306,7 +316,7 @@ function App() {
                     <div className="inspiration-tile filled" key={image.id}>
                       <img src={image.dataUrl} alt={image.name} />
                       <button type="button" onClick={() => removeInspiration(image.id)} aria-label={`Remove ${image.name}`}>
-                        ×
+                        <RemoveImageIcon />
                       </button>
                     </div>
                   ) : (
