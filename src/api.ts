@@ -10,6 +10,10 @@ export type GeneratePayload = {
   campaignPrompt: string;
 };
 
+export type DescribeReferenceImagesPayload = {
+  inspirationImages: string[];
+};
+
 export async function generateConcepts(payload: GeneratePayload): Promise<Concept[]> {
   const response = await fetch("/api/generate", {
     method: "POST",
@@ -26,4 +30,22 @@ export async function generateConcepts(payload: GeneratePayload): Promise<Concep
   }
 
   return data.concepts;
+}
+
+export async function describeReferenceImages(payload: DescribeReferenceImagesPayload): Promise<string> {
+  const response = await fetch("/api/describe-reference-images", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(data?.error ?? "The reference images could not be described.");
+  }
+
+  return data.description;
 }

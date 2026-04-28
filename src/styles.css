@@ -419,18 +419,18 @@ textarea::placeholder {
 }
 
 .concept-card {
-  position: relative;
-  aspect-ratio: 4 / 5;
   overflow: hidden;
   border: 5px solid #fff;
   border-radius: 34px;
   box-shadow: 0 26px 54px rgba(138, 113, 117, 0.24);
-  background: #081017;
+  background: rgba(255, 255, 255, 0.92);
 }
 
 .concept-card img {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 4 / 5;
+  height: auto;
+  display: block;
   object-fit: cover;
   transition: transform 600ms ease;
 }
@@ -440,38 +440,25 @@ textarea::placeholder {
 }
 
 .concept-caption {
-  position: absolute;
-  left: 18px;
-  right: 18px;
-  bottom: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  border-radius: 999px;
-  padding: 10px 14px 10px 16px;
-  background: rgba(255, 255, 255, 0.88);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding: 14px 16px 16px;
   color: #3a1826;
-  opacity: 0;
-  transform: translateY(8px);
-  transition:
-    opacity 180ms ease,
-    transform 180ms ease;
 }
 
-.concept-card:hover .concept-caption,
-.concept-card.placeholder .concept-caption {
-  opacity: 1;
-  transform: translateY(0);
+.concept-caption strong {
+  white-space: nowrap;
 }
 
 .concept-caption span {
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
   color: var(--ink-soft);
   font-size: 0.78rem;
+  line-height: 1.35;
 }
 
 @media (max-width: 760px) {

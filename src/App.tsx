@@ -1,5 +1,5 @@
-import { ChangeEvent, DragEvent, useMemo, useRef, useState } from "react";
-import { Concept, generateConcepts } from "./api";
+import { ChangeEvent, DragEvent, useEffect, useMemo, useRef, useState } from "react";
+import { Concept, describeReferenceImages, generateConcepts } from "./api";
 
 type UploadImage = {
   id: string;
@@ -44,6 +44,7 @@ function App() {
   const [logo, setLogo] = useState<UploadImage | null>(null);
   const [inspirationImages, setInspirationImages] = useState<UploadImage[]>([]);
   const [referenceImageDescription, setReferenceImageDescription] = useState("");
+  const [referenceDescriptionStatus, setReferenceDescriptionStatus] = useState<"idle" | "describing" | "error">("idle");
   const [campaignPrompt, setCampaignPrompt] = useState("");
   const [concepts, setConcepts] = useState<Concept[]>([]);
   const [status, setStatus] = useState<"idle" | "generating" | "success" | "error">("idle");
@@ -59,6 +60,43 @@ function App() {
     value: referenceImageDescription,
     setDescription: setReferenceImageDescription,
   };
+
+  useEffect(() => {
+    let isCurrent = true;
+
+    if (inspirationImages.length === 0) {
+      setReferenceImageDescription("");
+      setReferenceDescriptionStatus("idle");
+      return;
+    }
+
+    setReferenceDescriptionStatus("describing");
+    setReferenceImageDescription("");
+
+    void describeReferenceImages({
+      inspirationImages: inspirationImages.map((image) => image.dataUrl),
+    })
+      .then((description) => {
+        if (!isCurrent) {
+          return;
+        }
+
+        setReferenceImageDescription(description);
+        setReferenceDescriptionStatus("idle");
+      })
+      .catch(() => {
+        if (!isCurrent) {
+          return;
+        }
+
+        setReferenceImageDescription("");
+        setReferenceDescriptionStatus("error");
+      });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [inspirationImages]);
 
   async function setLogoFile(file: File) {
     if (!isImage(file)) {
@@ -259,7 +297,11 @@ function App() {
             readOnly
             data-gemini-hook="reference-image-description"
             placeholder={
-              inspirationImages.length
+              referenceDescriptionStatus === "describing"
+                ? "Gemini is describing the uploaded reference images..."
+                : referenceDescriptionStatus === "error"
+                  ? "Gemini could not describe these reference images. Try uploading them again."
+                  : inspirationImages.length
                 ? "Gemini will describe the uploaded reference images here."
                 : "Upload reference images to prepare a Gemini description."
             }
