@@ -4,6 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "local:setup": "node scripts/setup-local-preview.mjs",
+    "local:dev": "npm --prefix .local-preview/app run dev",
+    "local:build": "npm --prefix .local-preview/app run build",
+    "local:preview": "npm --prefix .local-preview/app run preview",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview"
