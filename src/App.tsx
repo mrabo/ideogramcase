@@ -66,7 +66,6 @@ function App() {
   const [concepts, setConcepts] = useState<Concept[]>([]);
   const [selectedConcept, setSelectedConcept] = useState<{ imageUrl: string; alt: string } | null>(null);
   const [status, setStatus] = useState<"idle" | "generating" | "success" | "error">("idle");
-  const [message, setMessage] = useState("");
   const logoInputRef = useRef<HTMLInputElement>(null);
   const inspirationInputRef = useRef<HTMLInputElement>(null);
   const referenceDescriptionRef = useRef<HTMLTextAreaElement>(null);
@@ -153,14 +152,12 @@ function App() {
 
   async function setLogoFile(file: File) {
     if (!isImage(file)) {
-      setMessage("Please choose an image file for your logo.");
       setStatus("error");
       return;
     }
 
     const dataUrl = await fileToDataUrl(file);
     setLogo({ id: crypto.randomUUID(), name: file.name, dataUrl });
-    setMessage("");
     setStatus("idle");
   }
 
@@ -169,11 +166,6 @@ function App() {
     const files = Array.from(fileList).filter(isImage).slice(0, remainingSlots);
 
     if (files.length === 0) {
-      setMessage(
-        inspirationImages.length >= MAX_INSPIRATION_IMAGES
-          ? "You already have five inspiration images."
-          : "Please choose image files for inspiration.",
-      );
       setStatus("error");
       return;
     }
@@ -187,7 +179,6 @@ function App() {
     );
 
     setInspirationImages((current) => [...current, ...images].slice(0, MAX_INSPIRATION_IMAGES));
-    setMessage("");
     setStatus("idle");
   }
 
@@ -225,15 +216,18 @@ function App() {
     setInspirationImages((current) => current.filter((image) => image.id !== id));
   }
 
+  function clearInspirationImages() {
+    setInspirationImages([]);
+    setStatus("idle");
+  }
+
   async function handleGenerate() {
     if (!campaignPrompt.trim()) {
       setStatus("error");
-      setMessage("Describe the campaign image first.");
       return;
     }
 
     setStatus("generating");
-    setMessage("Growing two fresh concepts...");
 
     try {
       const nextConcepts = await generateConcepts({
@@ -243,10 +237,8 @@ function App() {
       });
       setConcepts(nextConcepts);
       setStatus("success");
-      setMessage("Two concepts are ready.");
     } catch (error) {
       setStatus("error");
-      setMessage(error instanceof Error ? error.message : "The visuals could not be generated.");
     }
   }
 
@@ -255,7 +247,7 @@ function App() {
       <main className="app-shell">
       <header className="hero">
         <h1>BrandBloom</h1>
-        <p>Create unique brand-aligned imagery.</p>
+        <p>Create unique brand-aligned imagery</p>
       </header>
 
       <section className="workspace" aria-label="Campaign image generator">
@@ -282,8 +274,7 @@ function App() {
               ) : (
                 <>
                   <UploadIcon />
-                  <strong>Drag & drop your logo</strong>
-                  <small>PNG or SVG preferred</small>
+                  <strong>Drag & drop logo</strong>
                 </>
               )}
             </button>
@@ -293,7 +284,7 @@ function App() {
           <div className="panel inspiration-panel">
             <div className="section-heading">
               <span>Add brand style references</span>
-              <p>Select up to five images that capture the desired mood or color palette.</p>
+              <p>Select up to five images that capture the desired style.</p>
             </div>
 
             <div className="reference-upload-stack">
@@ -319,18 +310,22 @@ function App() {
                       </button>
                     </div>
                   ) : (
-                    <button
+                    <div
                       className="inspiration-tile empty"
                       key={`slot-${index}`}
-                      type="button"
-                      onClick={() => inspirationInputRef.current?.click()}
-                      aria-label={`Add inspiration image ${index + 1}`}
+                      aria-hidden="true"
                     >
                       <PhotoIcon />
-                    </button>
+                    </div>
                   ),
                 )}
               </div>
+
+              {inspirationImages.length ? (
+                <button className="clear-references-button" type="button" onClick={clearInspirationImages}>
+                  Clear
+                </button>
+              ) : null}
             </div>
             <input
               ref={inspirationInputRef}
@@ -390,7 +385,6 @@ function App() {
           <button className="generate-button" type="button" disabled={status === "generating"} onClick={handleGenerate}>
             {status === "generating" ? "Generating..." : concepts.length ? "Regenerate" : "Generate"}
           </button>
-          {message ? <p className={`status-message ${status}`}>{message}</p> : null}
         </div>
 
         <section className="concepts-section" aria-label="Your images">
