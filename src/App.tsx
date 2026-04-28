@@ -25,8 +25,16 @@ function isImage(file: File) {
 function UploadIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" className="upload-icon">
-      <path d="M12 3 6.8 8.2l1.4 1.4L11 6.8V16h2V6.8l2.8 2.8 1.4-1.4L12 3Z" />
+      <path d="M11 4h2v9.2l2.8-2.8 1.4 1.4L12 17l-5.2-5.2 1.4-1.4 2.8 2.8V4Z" />
       <path d="M5 15h2v4h10v-4h2v6H5v-6Z" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="reference-description-check">
+      <path d="m9.2 16.2-3.4-3.4-1.4 1.4 4.8 4.8 10.4-10.4-1.4-1.4-9 9Z" />
     </svg>
   );
 }
@@ -314,8 +322,8 @@ function App() {
             Model data: Reference image description
             {referenceDescriptionStatus === "describing" ? <span className="reference-description-spinner" aria-label="Loading" /> : null}
             {referenceDescriptionStatus === "idle" && referenceImageDescription ? (
-              <span className="reference-description-check" aria-label="Complete">
-                ✓
+              <span aria-label="Complete">
+                <CheckIcon />
               </span>
             ) : null}
           </summary>

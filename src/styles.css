@@ -327,16 +327,10 @@ textarea {
 }
 
 .reference-description-check {
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--leaf);
-  color: #ffffff;
-  font-size: 0.78rem;
-  line-height: 1;
+  width: 17px;
+  height: 17px;
+  display: block;
+  fill: var(--leaf);
 }
 
 textarea {

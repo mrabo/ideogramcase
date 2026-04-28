@@ -51,11 +51,8 @@ function dataUrlToPart(dataUrl) {
 
 function buildPrompt(campaignPrompt, conceptNumber) {
   return [
-    `Create professional campaign image concept ${conceptNumber} of 2 for BrandBloom.`,
+    `Create professional campaign image concept ${conceptNumber} of 2.`,
     "Use the provided logo as brand identity context and the inspiration images for mood, palette, materials, lighting, and styling.",
-    conceptNumber === 1
-      ? "Make this first concept bright, direct, and product-forward."
-      : "Make this second concept visually distinct, more editorial, and still on-brand.",
     "Do not explain the result. Return image outputs.",
     `Campaign image request: ${campaignPrompt}`,
   ].join("\n");
