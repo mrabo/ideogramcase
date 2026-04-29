@@ -6,6 +6,8 @@ const REFERENCE_DESCRIPTION_PROMPT = [
   "Look at the uploaded images and describe their shared visual style as concise bullet points.",
   "Write 4 to 6 bullets, each starting with '- '.",
   "Focus on visual qualities that help create new images in a similar style: color palette, lighting, composition, textures, mood, subject treatment, and graphic details.",
+  "Do not mention or infer any brand names, logos, trademarks, product names, or other identifying text seen in the images.",
+  "Ignore all visible words and labels; describe only non-branded visual characteristics.",
   "Do not include headings, numbered lists, bold text, italics, introductions, or conclusions.",
 ].join(" ");
 
