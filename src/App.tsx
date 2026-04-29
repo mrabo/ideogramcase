@@ -447,7 +447,7 @@ function App() {
           <div className="panel inspiration-panel">
             <div className="section-heading">
               <span>Style references</span>
-              <p>Select images that capture your visual style.</p>
+              <p>Select images that capture your brand's visual style.</p>
             </div>
 
             <div className={`reference-upload-stack ${inspirationImages.length >= MAX_INSPIRATION_IMAGES ? "is-full" : ""}`}>
