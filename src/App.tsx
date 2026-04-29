@@ -86,7 +86,7 @@ type HeaderParticle = {
   color: string;
 };
 
-function HeaderParticles() {
+function HeaderParticles({ className = "hero-particle-canvas" }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -216,7 +216,7 @@ function HeaderParticles() {
     };
   }, []);
 
-  return <canvas className="hero-particle-canvas" ref={canvasRef} aria-hidden="true" />;
+  return <canvas className={className} ref={canvasRef} aria-hidden="true" />;
 }
 
 function App() {
@@ -691,7 +691,10 @@ function App() {
               {status === "generating"
                 ? [1, 2].map((placeholderIndex) => (
                     <article className="concept-card concept-placeholder-card" key={`placeholder-${placeholderIndex}`} aria-label={`Creating image ${placeholderIndex}`}>
-                      <div className="concept-placeholder" aria-hidden="true" />
+                      <div className="concept-placeholder" aria-hidden="true">
+                        <HeaderParticles className="concept-placeholder-particle-canvas" />
+                        <div className="concept-placeholder-blur" />
+                      </div>
                     </article>
                   ))
                 : concepts.map((concept, index) => (

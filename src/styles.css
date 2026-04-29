@@ -645,43 +645,24 @@ textarea::placeholder {
   background: linear-gradient(120deg, rgba(223, 245, 255, 0.68), rgba(255, 255, 255, 0.95), rgba(223, 245, 255, 0.72));
 }
 
-.concept-placeholder::before {
-  content: "";
-  position: absolute;
-  inset: -18%;
-  background:
-    radial-gradient(circle at 24% 30%, rgba(5, 175, 242, 0.24), transparent 28%),
-    radial-gradient(circle at 78% 70%, rgba(18, 183, 106, 0.2), transparent 30%);
-  animation: concept-placeholder-blooms 2.8s ease-in-out infinite alternate;
-}
-
-.concept-placeholder::after {
-  content: "";
+.concept-placeholder-particle-canvas {
   position: absolute;
   inset: 0;
-  transform: translateX(-120%);
-  background: linear-gradient(100deg, transparent 24%, rgba(255, 255, 255, 0.82) 46%, transparent 68%);
-  animation: concept-placeholder-sweep 1.8s ease-in-out infinite;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.75;
 }
 
-@keyframes concept-placeholder-blooms {
-  0% {
-    transform: translate3d(-5%, -3%, 0) scale(1);
-  }
-
-  50% {
-    transform: translate3d(6%, 4%, 0) scale(1.08);
-  }
-
-  100% {
-    transform: translate3d(-3%, 7%, 0) scale(1.04);
-  }
-}
-
-@keyframes concept-placeholder-sweep {
-  to {
-    transform: translateX(120%);
-  }
+.concept-placeholder-blur {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.08));
 }
 
 .concept-image-button {
