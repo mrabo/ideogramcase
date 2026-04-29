@@ -74,14 +74,14 @@ button {
 .workspace {
   position: relative;
   z-index: 1;
-  width: min(1000px, 100%);
+  width: min(1120px, 100%);
   margin: 0 auto;
 }
 
-.upload-grid {
+.creative-grid {
   display: grid;
-  grid-template-columns: minmax(260px, 0.88fr) minmax(0, 1.85fr);
-  gap: 32px;
+  grid-template-columns: minmax(320px, 0.9fr) minmax(420px, 1.1fr);
+  gap: 56px;
   align-items: start;
 }
 
@@ -90,7 +90,7 @@ button {
   margin-bottom: 14px;
 }
 
-.upload-grid .section-heading {
+.creative-grid .section-heading {
   min-height: 60px;
 }
 
@@ -189,16 +189,16 @@ textarea {
 
 .reference-upload-stack {
   --reference-thumb-size: 74px;
-  min-height: 178px;
+  min-height: 0;
   display: grid;
-  grid-template-rows: 64px var(--reference-thumb-size) auto;
-  gap: 11px;
+  grid-template-rows: 178px var(--reference-thumb-size) auto;
+  gap: 14px;
 }
 
 .reference-drop {
-  min-height: 0;
+  min-height: 178px;
   border-radius: 18px;
-  padding: 12px 20px;
+  padding: 28px 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -325,13 +325,21 @@ textarea {
   pointer-events: none;
 }
 
+.logo-row,
 .prompt-section {
   margin-top: 48px;
 }
 
 .prompt-section label {
+  display: block;
+}
+
+.prompt-panel {
+  margin-top: 0;
+}
+
+.prompt-heading {
   padding: 0 8px;
-  margin-bottom: 16px;
 }
 
 .reference-description-section summary {
@@ -399,6 +407,10 @@ textarea {
   font-size: 1rem;
   line-height: 1.7;
   outline: none;
+}
+
+.prompt-panel textarea {
+  min-height: 360px;
 }
 
 textarea:focus {
@@ -570,20 +582,32 @@ textarea::placeholder {
     margin-bottom: 42px;
   }
 
-  .upload-grid,
+  .creative-grid,
   .concept-grid {
     grid-template-columns: 1fr;
   }
 
-  .upload-grid .section-heading {
+  .creative-grid {
+    gap: 32px;
+  }
+
+  .creative-grid .section-heading {
     min-height: 0;
   }
 
   .reference-upload-stack {
     --reference-thumb-size: clamp(50px, 15vw, 74px);
     height: auto;
-    grid-template-rows: 68px var(--reference-thumb-size) auto;
+    grid-template-rows: 132px var(--reference-thumb-size) auto;
     gap: 10px;
+  }
+
+  .reference-drop {
+    min-height: 132px;
+  }
+
+  .prompt-panel textarea {
+    min-height: 280px;
   }
 
   .inspiration-grid {

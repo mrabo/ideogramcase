@@ -261,36 +261,7 @@ function App() {
       </header>
 
       <section className="workspace" aria-label="Campaign image generator">
-        <div className="upload-grid">
-          <div className="panel logo-panel">
-            <div className="section-heading">
-              <span>Upload logo</span>
-              <p>Upload your logo to include it in images.</p>
-            </div>
-
-            <button
-              className={`drop-zone logo-drop ${logo ? "has-image" : ""}`}
-              type="button"
-              onClick={() => logoInputRef.current?.click()}
-              onDragOver={(event) => event.preventDefault()}
-              onDrop={handleLogoDrop}
-              aria-label="Upload logo"
-            >
-              {logo ? (
-                <>
-                  <img src={logo.dataUrl} alt={logo.name} />
-                  <span className="file-name">{logo.name}</span>
-                </>
-              ) : (
-                <>
-                  <UploadIcon />
-                  <strong>Drag & drop logo</strong>
-                </>
-              )}
-            </button>
-            <input ref={logoInputRef} className="hidden-input" type="file" accept="image/*,.svg" onChange={handleLogoInput} />
-          </div>
-
+        <div className="creative-grid">
           <div className="panel inspiration-panel">
             <div className="section-heading">
               <span>Add brand style references</span>
@@ -346,6 +317,50 @@ function App() {
               onChange={handleInspirationInput}
             />
           </div>
+
+          <div className="prompt-section prompt-panel">
+            <div className="section-heading prompt-heading">
+              <label htmlFor="campaign-prompt">Your Image</label>
+              <p>Describe your new image – the brand styling will be applied.</p>
+            </div>
+            <textarea
+              id="campaign-prompt"
+              value={campaignPrompt}
+              placeholder="Describe the image you want to create"
+              onChange={(event) => setCampaignPrompt(event.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="logo-row">
+          <div className="panel logo-panel">
+            <div className="section-heading">
+              <span>Upload logo</span>
+              <p>Upload your logo to include it in images.</p>
+            </div>
+
+            <button
+              className={`drop-zone logo-drop ${logo ? "has-image" : ""}`}
+              type="button"
+              onClick={() => logoInputRef.current?.click()}
+              onDragOver={(event) => event.preventDefault()}
+              onDrop={handleLogoDrop}
+              aria-label="Upload logo"
+            >
+              {logo ? (
+                <>
+                  <img src={logo.dataUrl} alt={logo.name} />
+                  <span className="file-name">{logo.name}</span>
+                </>
+              ) : (
+                <>
+                  <UploadIcon />
+                  <strong>Drag & drop logo</strong>
+                </>
+              )}
+            </button>
+            <input ref={logoInputRef} className="hidden-input" type="file" accept="image/*,.svg" onChange={handleLogoInput} />
+          </div>
         </div>
 
         <details
@@ -381,15 +396,6 @@ function App() {
             aria-label="Gemini reference image description"
           />
         </details>
-
-        <div className="prompt-section">
-          <label htmlFor="campaign-prompt">Describe the image you want</label>
-          <textarea
-            id="campaign-prompt"
-            value={campaignPrompt}
-            onChange={(event) => setCampaignPrompt(event.target.value)}
-          />
-        </div>
 
         <div className="action-row">
           <button className="generate-button" type="button" disabled={status === "generating"} onClick={handleGenerate}>
