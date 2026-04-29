@@ -244,10 +244,13 @@ function App() {
     setStatus("generating");
 
     try {
+      const logoInstruction = logoModifierEnabled && logoModifierPrompt.trim()
+        ? `\n\nLogo modifier: ${logoModifierPrompt.trim()}`
+        : "";
       const nextConcepts = await generateConcepts({
-        logo: logo?.dataUrl ?? null,
+        logo: logoModifierEnabled ? logo?.dataUrl ?? null : null,
         inspirationImages: inspirationImages.map((image) => image.dataUrl),
-        campaignPrompt,
+        campaignPrompt: `${campaignPrompt}${logoInstruction}`,
       });
       setConcepts(nextConcepts);
       setStatus("success");
@@ -403,7 +406,7 @@ function App() {
                     <textarea
                       className="modifier-textarea"
                       value={logoModifierPrompt}
-                      placeholder="Describe how to use the logo"
+                      placeholder="Describe how to use the logo (required)"
                       onChange={(event) => setLogoModifierPrompt(event.target.value)}
                       aria-label="Logo modifier instructions"
                     />
@@ -450,36 +453,7 @@ function App() {
           </section>
         </div>
 
-        <div className="logo-row">
-          <div className="panel logo-panel">
-            <div className="section-heading">
-              <span>Upload logo</span>
-              <p>Upload your logo to include it in images.</p>
-            </div>
-
-            <button
-              className={`drop-zone logo-drop ${logo ? "has-image" : ""}`}
-              type="button"
-              onClick={() => logoInputRef.current?.click()}
-              onDragOver={(event) => event.preventDefault()}
-              onDrop={handleLogoDrop}
-              aria-label="Upload logo"
-            >
-              {logo ? (
-                <>
-                  <img src={logo.dataUrl} alt={logo.name} />
-                  <span className="file-name">{logo.name}</span>
-                </>
-              ) : (
-                <>
-                  <UploadIcon />
-                  <strong>Drag & drop logo</strong>
-                </>
-              )}
-            </button>
-            <input ref={logoInputRef} className="hidden-input" type="file" accept="image/*,.svg" onChange={handleLogoInput} />
-          </div>
-        </div>
+        <input ref={logoInputRef} className="hidden-input" type="file" accept="image/*,.svg" onChange={handleLogoInput} />
 
         <div className="action-row">
           <button className="generate-button" type="button" disabled={status === "generating"} onClick={handleGenerate}>

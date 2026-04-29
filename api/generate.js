@@ -106,6 +106,10 @@ export default async function handler(request, response) {
       .filter(Boolean)
       .map(dataUrlToPart)
       .filter(Boolean);
+    const logoPart = body.logo ? dataUrlToPart(body.logo) : null;
+    if (logoPart) {
+      imageParts.push(logoPart);
+    }
 
     const concepts = (
       await Promise.all([1, 2].map((conceptNumber) => generateConceptImage(ai, model, imageParts, campaignPrompt, conceptNumber)))
