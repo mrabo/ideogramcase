@@ -286,7 +286,7 @@ function App() {
     <>
       <main className="app-shell">
       <header className="hero">
-        <h1>BrandBloom</h1>
+        <h1>BrandSeed</h1>
         <p>Create unique brand-aligned imagery</p>
       </header>
 
@@ -518,7 +518,7 @@ function App() {
             disabled={status === "generating"}
             onClick={handleGenerate}
           >
-            {status === "generating" ? "Generating..." : concepts.length ? "Regenerate" : "Generate"}
+            {status === "generating" ? "Creating..." : concepts.length ? "Regenerate" : "Create"}
           </button>
           {generationErrorMessage ? (
             <p className="generation-error" role="alert">

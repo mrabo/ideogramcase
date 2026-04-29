@@ -395,7 +395,7 @@ textarea {
   resize: vertical;
   border-style: solid;
   border-color: rgba(208, 213, 221, 0.92);
-  border-radius: 28px;
+  border-radius: 18px;
   padding: 28px 30px;
   color: #24272b;
   font-size: 1rem;
@@ -605,6 +605,7 @@ textarea::placeholder {
 .concept-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
   gap: 34px;
 }
 
@@ -632,10 +633,8 @@ textarea::placeholder {
 
 .concept-image-button img {
   width: 100%;
-  aspect-ratio: 4 / 5;
   height: auto;
   display: block;
-  object-fit: cover;
 }
 
 .image-overlay {
@@ -696,8 +695,7 @@ textarea::placeholder {
     margin-bottom: 42px;
   }
 
-  .creative-grid,
-  .concept-grid {
+  .creative-grid {
     grid-template-columns: 1fr;
   }
 

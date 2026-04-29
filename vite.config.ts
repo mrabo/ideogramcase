@@ -83,7 +83,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       {
-        name: "brandbloom-local-api",
+        name: "brandseed-local-api",
         configureServer(server) {
           [
             {

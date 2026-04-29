@@ -1,4 +1,4 @@
-# BrandBloom
+# BrandSeed
 
 ## Local Development
 
