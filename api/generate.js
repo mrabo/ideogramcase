@@ -62,6 +62,54 @@ function buildPrompt(campaignPrompt) {
   ].join("\n");
 }
 
+function getGeminiErrorMessage(result) {
+  const candidates = result?.candidates ?? [];
+  const promptFeedback = result?.promptFeedback;
+  const promptBlockReason = promptFeedback?.blockReason;
+  const promptBlockMessage = promptFeedback?.blockReasonMessage;
+  const finishReasons = candidates
+    .map((candidate) => candidate?.finishReason)
+    .filter(Boolean);
+  const candidateMessages = candidates
+    .flatMap((candidate) => candidate?.content?.parts ?? [])
+    .map((part) => part?.text)
+    .filter(Boolean);
+  const safetyRatings = candidates
+    .flatMap((candidate) => candidate?.safetyRatings ?? [])
+    .filter((rating) => rating?.blocked || rating?.probability || rating?.category)
+    .map((rating) => {
+      const category = rating.category ? String(rating.category).replace(/^HARM_CATEGORY_/, "").toLowerCase() : "safety";
+      const probability = rating.probability ? ` (${String(rating.probability).toLowerCase()})` : "";
+      return `${category}${probability}`;
+    });
+  const promptSafetyRatings = (promptFeedback?.safetyRatings ?? [])
+    .filter((rating) => rating?.blocked || rating?.probability || rating?.category)
+    .map((rating) => {
+      const category = rating.category ? String(rating.category).replace(/^HARM_CATEGORY_/, "").toLowerCase() : "safety";
+      const probability = rating.probability ? ` (${String(rating.probability).toLowerCase()})` : "";
+      return `${category}${probability}`;
+    });
+
+  if (promptBlockReason || promptBlockMessage) {
+    return `Gemini blocked the request. ${[promptBlockReason ? `Reason: ${promptBlockReason}.` : "", promptBlockMessage].filter(Boolean).join(" ")}`;
+  }
+
+  if (finishReasons.length) {
+    return `Gemini did not return an image. Finish reason: ${finishReasons.join(", ")}.`;
+  }
+
+  if (candidateMessages.length) {
+    return `Gemini returned text instead of an image: ${candidateMessages.join(" ").slice(0, 500)}`;
+  }
+
+  const allSafetyRatings = [...promptSafetyRatings, ...safetyRatings];
+  if (allSafetyRatings.length) {
+    return `Gemini did not return an image. Safety ratings: ${allSafetyRatings.join(", ")}.`;
+  }
+
+  return "Gemini did not return an image.";
+}
+
 async function generateConceptImage(ai, model, imageParts, campaignPrompt, conceptNumber) {
   const result = await ai.models.generateContent({
     model,
@@ -70,7 +118,7 @@ async function generateConceptImage(ai, model, imageParts, campaignPrompt, conce
   const part = result.candidates?.[0]?.content?.parts?.find((candidatePart) => candidatePart.inlineData?.data);
 
   if (!part?.inlineData?.data) {
-    return null;
+    return { error: getGeminiErrorMessage(result) };
   }
 
   return {
@@ -111,17 +159,23 @@ export default async function handler(request, response) {
       imageParts.push(logoPart);
     }
 
-    const concepts = (
-      await Promise.all([1, 2].map((conceptNumber) => generateConceptImage(ai, model, imageParts, campaignPrompt, conceptNumber)))
-    ).filter(Boolean);
+    const conceptResults = await Promise.all([1, 2].map((conceptNumber) => generateConceptImage(ai, model, imageParts, campaignPrompt, conceptNumber)));
+    const concepts = conceptResults.filter((result) => result?.imageUrl);
 
     if (concepts.length < 2) {
-      return response.status(502).json({ error: "No image concepts came back. Try regenerating." });
+      const geminiError = conceptResults.find((result) => result?.error)?.error;
+      return response.status(502).json({
+        error: "No image concepts came back. Try regenerating.",
+        details: geminiError,
+      });
     }
 
     return response.status(200).json({ concepts });
   } catch (error) {
     console.error(error);
-    return response.status(500).json({ error: "The visuals could not be generated. Try again." });
+    return response.status(500).json({
+      error: "The visuals could not be generated. Try again.",
+      details: error instanceof Error ? error.message : String(error),
+    });
   }
 }

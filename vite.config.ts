@@ -42,7 +42,9 @@ function registerLocalApiRoute(server: ViteDevServer, route: LocalApiRoute) {
       try {
         const bodyText = Buffer.concat(chunks).toString("utf8");
         const body = bodyText ? JSON.parse(bodyText) : {};
-        const { default: handler } = (await import(new URL(route.handlerPath, import.meta.url).href)) as {
+        const handlerUrl = new URL(route.handlerPath, import.meta.url);
+        handlerUrl.searchParams.set("t", String(Date.now()));
+        const { default: handler } = (await import(handlerUrl.href)) as {
           default: GenerateHandler;
         };
 

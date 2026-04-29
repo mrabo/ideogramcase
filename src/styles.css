@@ -540,6 +540,20 @@ textarea::placeholder {
   opacity: 0.78;
 }
 
+.generation-error {
+  width: fit-content;
+  max-width: min(520px, 100%);
+  margin: 0;
+  border-radius: 999px;
+  padding: 10px 18px;
+  background: rgba(217, 45, 32, 0.1);
+  color: var(--error);
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+}
+
 .icon {
   width: 24px;
   height: 24px;

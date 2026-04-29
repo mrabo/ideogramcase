@@ -26,7 +26,8 @@ export async function generateConcepts(payload: GeneratePayload): Promise<Concep
   const data = await response.json().catch(() => null);
 
   if (!response.ok) {
-    throw new Error(data?.error ?? "The visuals could not be generated.");
+    const details = data?.details ? ` ${data.details}` : "";
+    throw new Error(`${data?.error ?? "The visuals could not be generated."}${details}`);
   }
 
   return data.concepts;

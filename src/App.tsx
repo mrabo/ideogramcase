@@ -84,9 +84,11 @@ function App() {
   const [logoModifierPrompt, setLogoModifierPrompt] = useState("");
   const [orientationModifierEnabled, setOrientationModifierEnabled] = useState(false);
   const [orientation, setOrientation] = useState<OrientationOption>("landscape-4-3");
+  const [preventTextModifierEnabled, setPreventTextModifierEnabled] = useState(false);
   const [concepts, setConcepts] = useState<Concept[]>([]);
   const [selectedConcept, setSelectedConcept] = useState<{ imageUrl: string; alt: string } | null>(null);
   const [status, setStatus] = useState<"idle" | "generating" | "success" | "error">("idle");
+  const [generationErrorMessage, setGenerationErrorMessage] = useState("");
   const logoInputRef = useRef<HTMLInputElement>(null);
   const inspirationInputRef = useRef<HTMLInputElement>(null);
   const referenceDescriptionRef = useRef<HTMLTextAreaElement>(null);
@@ -180,6 +182,7 @@ function App() {
     const dataUrl = await fileToDataUrl(file);
     setLogo({ id: crypto.randomUUID(), name: file.name, dataUrl });
     setStatus("idle");
+    setGenerationErrorMessage("");
   }
 
   async function addInspirationFiles(fileList: FileList | File[]) {
@@ -201,6 +204,7 @@ function App() {
 
     setInspirationImages((current) => [...current, ...images].slice(0, MAX_INSPIRATION_IMAGES));
     setStatus("idle");
+    setGenerationErrorMessage("");
   }
 
   function handleLogoInput(event: ChangeEvent<HTMLInputElement>) {
@@ -240,32 +244,41 @@ function App() {
   function clearInspirationImages() {
     setInspirationImages([]);
     setStatus("idle");
+    setGenerationErrorMessage("");
   }
 
   async function handleGenerate() {
     if (!campaignPrompt.trim()) {
       setStatus("error");
+      setGenerationErrorMessage("");
       return;
     }
 
     setStatus("generating");
+    setGenerationErrorMessage("");
 
     try {
-      const logoInstruction = logoModifierEnabled && logoModifierPrompt.trim()
-        ? `\n\nLogo modifier: ${logoModifierPrompt.trim()}`
-        : "";
+      const logoInstruction = logoModifierEnabled
+        ? logoModifierPrompt.trim()
+          ? `\n\nLogo modifier: ${logoModifierPrompt.trim()}`
+          : ""
+        : "\n\nLogo modifier: Do not include any logos, brand marks, brand names, trademarks, labels, signage, or branding of any kind in the generated image.";
       const orientationInstruction = orientationModifierEnabled
         ? `\n\nOrientation modifier: Create the image in ${ORIENTATION_PROMPTS[orientation]}.`
+        : "";
+      const preventTextInstruction = preventTextModifierEnabled
+        ? "\n\nText prevention modifier: Do not include any readable text, words, letters, numbers, typography, labels, or captions in the generated image, even if text appears in the reference images or the campaign prompt."
         : "";
       const nextConcepts = await generateConcepts({
         logo: logoModifierEnabled ? logo?.dataUrl ?? null : null,
         inspirationImages: inspirationImages.map((image) => image.dataUrl),
-        campaignPrompt: `${campaignPrompt}${logoInstruction}${orientationInstruction}`,
+        campaignPrompt: `${campaignPrompt}${logoInstruction}${orientationInstruction}${preventTextInstruction}`,
       });
       setConcepts(nextConcepts);
       setStatus("success");
     } catch (error) {
       setStatus("error");
+      setGenerationErrorMessage(error instanceof Error ? error.message : "The visuals could not be generated. Try again.");
     }
   }
 
@@ -469,6 +482,17 @@ function App() {
                   </div>
                 ) : null}
               </div>
+
+              <div className={`modifier-item ${preventTextModifierEnabled ? "is-active" : ""}`}>
+                <label className="modifier-toggle">
+                  <input
+                    type="checkbox"
+                    checked={preventTextModifierEnabled}
+                    onChange={(event) => setPreventTextModifierEnabled(event.target.checked)}
+                  />
+                  <span>Prevent text in image</span>
+                </label>
+              </div>
             </div>
           </section>
         </div>
@@ -479,6 +503,11 @@ function App() {
           <button className="generate-button" type="button" disabled={status === "generating"} onClick={handleGenerate}>
             {status === "generating" ? "Generating..." : concepts.length ? "Regenerate" : "Generate"}
           </button>
+          {generationErrorMessage ? (
+            <p className="generation-error" role="alert">
+              {generationErrorMessage}
+            </p>
+          ) : null}
         </div>
 
         {concepts.length ? (
