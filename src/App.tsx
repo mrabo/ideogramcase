@@ -677,6 +677,11 @@ function App() {
                   />
                   <span>Prevent text in image</span>
                 </label>
+                {preventTextModifierEnabled ? (
+                  <div className="modifier-active-content">
+                    <p>Will try to prevent text and numbers from showing in images.</p>
+                  </div>
+                ) : null}
               </div>
             </div>
           </section>

@@ -472,6 +472,10 @@ textarea::placeholder {
   margin-left: 34px;
 }
 
+.modifier-active-content p {
+  margin: 0;
+}
+
 .logo-modifier-content {
   display: grid;
   grid-template-columns: 1fr;
