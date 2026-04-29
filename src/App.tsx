@@ -90,13 +90,13 @@ function HeaderParticles({ className = "hero-particle-canvas" }: { className?: s
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) {
+    const canvasEl = canvasRef.current;
+    if (!canvasEl) {
       return;
     }
 
-    const context = canvas.getContext("2d");
-    if (!context) {
+    const contextEl = canvasEl.getContext("2d");
+    if (!contextEl) {
       return;
     }
 
@@ -105,10 +105,14 @@ function HeaderParticles({ className = "hero-particle-canvas" }: { className?: s
       return;
     }
 
-    const parent = canvas.parentElement;
-    if (!parent) {
+    const parentEl = canvasEl.parentElement;
+    if (!parentEl) {
       return;
     }
+
+    const canvas: HTMLCanvasElement = canvasEl;
+    const context: CanvasRenderingContext2D = contextEl;
+    const parent: HTMLElement = parentEl;
 
     const palette = ["#ff5f93", "#ffcc4d", "#7ce577", "#52d7ff", "#a981ff", "#ff8b4a", "#40bfa5"];
     const particles: HeaderParticle[] = [];

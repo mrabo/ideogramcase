@@ -4,5 +4,6 @@ dist
 .env.local
 .vercel
 .local-preview/
+.claude/
 *.tsbuildinfo
 .DS_Store
