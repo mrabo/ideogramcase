@@ -74,6 +74,151 @@ function PhotoIcon() {
   );
 }
 
+type HeaderParticle = {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  alpha: number;
+  life: number;
+  maxLife: number;
+  color: string;
+};
+
+function HeaderParticles() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      return;
+    }
+
+    const context = canvas.getContext("2d");
+    if (!context) {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mediaQuery.matches) {
+      return;
+    }
+
+    const parent = canvas.parentElement;
+    if (!parent) {
+      return;
+    }
+
+    const palette = ["#ff5f93", "#ffcc4d", "#7ce577", "#52d7ff", "#a981ff", "#ff8b4a", "#40bfa5"];
+    const particles: HeaderParticle[] = [];
+    const densityFactor = 2.6;
+    const minimumParticles = 260;
+    const spawnPerFrame = 7;
+    const turbulence = 0.016;
+    const drag = 0.985;
+    const topFadeDistance = 120;
+    let rafId = 0;
+    let width = 0;
+    let height = 0;
+    let maxParticles = minimumParticles;
+    let lastFrameTime = performance.now();
+
+    function randomBetween(min: number, max: number) {
+      return min + Math.random() * (max - min);
+    }
+
+    function resizeCanvas() {
+      const devicePixelRatio = window.devicePixelRatio || 1;
+      const bounds = parent.getBoundingClientRect();
+      width = bounds.width;
+      height = bounds.height;
+      maxParticles = Math.max(minimumParticles, Math.floor((width * height * densityFactor) / 1000));
+      canvas.width = Math.max(1, Math.floor(width * devicePixelRatio));
+      canvas.height = Math.max(1, Math.floor(height * devicePixelRatio));
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    }
+
+    function createParticle() {
+      const spawnBand = Math.max(36, height * 0.2);
+      const radius = randomBetween(1, 4);
+      particles.push({
+        x: randomBetween(0, width),
+        y: randomBetween(height - spawnBand, height + 16),
+        vx: randomBetween(-0.28, 0.28),
+        vy: randomBetween(-1.4, -0.45),
+        radius,
+        alpha: randomBetween(0.45, 0.95),
+        life: 0,
+        maxLife: randomBetween(1300, 3000),
+        color: palette[Math.floor(Math.random() * palette.length)],
+      });
+    }
+
+    function updateAndDrawParticle(particle: HeaderParticle, deltaMs: number) {
+      const deltaMultiplier = deltaMs / 16.6667;
+      particle.life += deltaMs;
+      particle.vx += randomBetween(-turbulence, turbulence) * deltaMultiplier;
+      particle.vy -= randomBetween(0.0008, 0.0025) * deltaMs;
+      particle.vx *= drag;
+      particle.vy *= drag;
+      particle.x += particle.vx * deltaMultiplier * 2.4;
+      particle.y += particle.vy * deltaMultiplier * 2.4;
+
+      const lifeFade = 1 - particle.life / particle.maxLife;
+      const topFade = Math.min(1, Math.max(0, particle.y / topFadeDistance));
+      const opacity = particle.alpha * Math.min(lifeFade, topFade);
+      if (opacity <= 0) {
+        return false;
+      }
+
+      context.globalAlpha = opacity;
+      context.fillStyle = particle.color;
+      context.beginPath();
+      context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+      context.fill();
+      return true;
+    }
+
+    function animate(currentTime: number) {
+      const deltaMs = Math.min(40, currentTime - lastFrameTime || 16.6667);
+      lastFrameTime = currentTime;
+
+      context.clearRect(0, 0, width, height);
+
+      if (particles.length < maxParticles) {
+        for (let count = 0; count < spawnPerFrame; count += 1) {
+          createParticle();
+        }
+      }
+
+      for (let index = particles.length - 1; index >= 0; index -= 1) {
+        const particle = particles[index];
+        const isVisible = updateAndDrawParticle(particle, deltaMs);
+        if (!isVisible || particle.y < -24 || particle.x < -24 || particle.x > width + 24) {
+          particles.splice(index, 1);
+        }
+      }
+
+      rafId = window.requestAnimationFrame(animate);
+    }
+
+    resizeCanvas();
+    const resizeObserver = new ResizeObserver(resizeCanvas);
+    resizeObserver.observe(parent);
+    rafId = window.requestAnimationFrame(animate);
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+      resizeObserver.disconnect();
+    };
+  }, []);
+
+  return <canvas className="hero-particle-canvas" ref={canvasRef} aria-hidden="true" />;
+}
+
 function App() {
   const [logo, setLogo] = useState<UploadImage | null>(null);
   const [inspirationImages, setInspirationImages] = useState<UploadImage[]>([]);
@@ -292,6 +437,7 @@ function App() {
     <>
       <main className="app-shell">
       <header className="hero">
+        <HeaderParticles />
         <h1>BrandSeed</h1>
         <p>Create unique brand-aligned imagery</p>
       </header>
