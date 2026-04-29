@@ -527,7 +527,7 @@ function App() {
           ) : null}
         </div>
 
-        {concepts.length ? (
+        {status === "generating" || concepts.length ? (
           <section className="concepts-section" aria-label="Your images">
             <div className="divider-title">
               <span />
@@ -536,18 +536,24 @@ function App() {
             </div>
 
             <div className="concept-grid">
-              {concepts.map((concept, index) => (
-                <article className="concept-card" key={concept.id}>
-                  <button
-                    className="concept-image-button"
-                    type="button"
-                    onClick={() => setSelectedConcept({ imageUrl: concept.imageUrl, alt: `Concept ${index + 1}` })}
-                    aria-label={`Open concept ${index + 1} fullscreen`}
-                  >
-                    <img src={concept.imageUrl} alt={`Concept ${index + 1}`} />
-                  </button>
-                </article>
-              ))}
+              {status === "generating"
+                ? [1, 2].map((placeholderIndex) => (
+                    <article className="concept-card concept-placeholder-card" key={`placeholder-${placeholderIndex}`} aria-label={`Creating image ${placeholderIndex}`}>
+                      <div className="concept-placeholder" aria-hidden="true" />
+                    </article>
+                  ))
+                : concepts.map((concept, index) => (
+                    <article className="concept-card" key={concept.id}>
+                      <button
+                        className="concept-image-button"
+                        type="button"
+                        onClick={() => setSelectedConcept({ imageUrl: concept.imageUrl, alt: `Concept ${index + 1}` })}
+                        aria-label={`Open concept ${index + 1} fullscreen`}
+                      >
+                        <img src={concept.imageUrl} alt={`Concept ${index + 1}`} />
+                      </button>
+                    </article>
+                  ))}
             </div>
           </section>
         ) : null}
