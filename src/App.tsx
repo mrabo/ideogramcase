@@ -264,7 +264,7 @@ function App() {
         <div className="creative-grid">
           <div className="panel inspiration-panel">
             <div className="section-heading">
-              <span>Add brand style references</span>
+              <span>Brand style references</span>
               <p>Select up to five images that capture your desired visual style.</p>
             </div>
 
@@ -332,6 +332,30 @@ function App() {
           </div>
         </div>
 
+        <section className="prompt-section reference-description-section">
+          <div className="section-heading reference-description-heading">
+            <div className="reference-description-title">
+              <span>Style applied</span>
+              {referenceDescriptionStatus === "describing" ? <span className="reference-description-spinner" aria-label="Loading" /> : null}
+              {referenceDescriptionStatus === "idle" && referenceImageDescription ? (
+                <span aria-label="Complete">
+                  <CheckIcon />
+                </span>
+              ) : null}
+            </div>
+            <p>The description of the style in your reference images that will be used to create your new images – feel free to adjust.</p>
+          </div>
+          <textarea
+            ref={referenceDescriptionRef}
+            id="reference-description"
+            value={geminiReferenceDescriptionHook.value}
+            readOnly
+            data-gemini-hook="reference-image-description"
+            placeholder="Description of style"
+            aria-label="Gemini reference image description"
+          />
+        </section>
+
         <div className="logo-row">
           <div className="panel logo-panel">
             <div className="section-heading">
@@ -362,40 +386,6 @@ function App() {
             <input ref={logoInputRef} className="hidden-input" type="file" accept="image/*,.svg" onChange={handleLogoInput} />
           </div>
         </div>
-
-        <details
-          className="prompt-section reference-description-section"
-          onToggle={() => {
-            requestAnimationFrame(resizeReferenceDescription);
-          }}
-        >
-          <summary>
-            Reference image description (debug)
-            {referenceDescriptionStatus === "describing" ? <span className="reference-description-spinner" aria-label="Loading" /> : null}
-            {referenceDescriptionStatus === "idle" && referenceImageDescription ? (
-              <span aria-label="Complete">
-                <CheckIcon />
-              </span>
-            ) : null}
-          </summary>
-          <textarea
-            ref={referenceDescriptionRef}
-            id="reference-description"
-            value={geminiReferenceDescriptionHook.value}
-            readOnly
-            data-gemini-hook="reference-image-description"
-            placeholder={
-              referenceDescriptionStatus === "describing"
-                ? "Gemini is describing the uploaded reference images..."
-                : referenceDescriptionStatus === "error"
-                  ? "Gemini could not describe these reference images. Try uploading them again."
-                  : inspirationImages.length
-                ? "Gemini will describe the uploaded reference images here."
-                : "Upload reference images to prepare a Gemini description."
-            }
-            aria-label="Gemini reference image description"
-          />
-        </details>
 
         <div className="action-row">
           <button className="generate-button" type="button" disabled={status === "generating"} onClick={handleGenerate}>

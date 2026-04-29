@@ -96,7 +96,7 @@ button {
 
 .section-heading span,
 .prompt-section label,
-.reference-description-section summary,
+.reference-description-title,
 .divider-title h2 {
   display: block;
   color: var(--primary);
@@ -342,34 +342,16 @@ textarea {
   padding: 0 8px;
 }
 
-.reference-description-section summary {
+.reference-description-heading {
+  padding: 0 8px;
+  margin-bottom: 16px;
+}
+
+.reference-description-title {
   display: flex;
   align-items: center;
   gap: 10px;
   width: fit-content;
-  padding: 0 8px;
-  margin-bottom: 16px;
-  cursor: pointer;
-  list-style: none;
-}
-
-.reference-description-section summary::-webkit-details-marker {
-  display: none;
-}
-
-.reference-description-section summary::before {
-  content: "";
-  width: 0;
-  height: 0;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 8px solid currentColor;
-  transform-origin: 50% 50%;
-  transition: transform 180ms ease;
-}
-
-.reference-description-section[open] summary::before {
-  transform: rotate(90deg);
 }
 
 .reference-description-spinner {
