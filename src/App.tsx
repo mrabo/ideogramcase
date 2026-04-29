@@ -79,6 +79,7 @@ function App() {
   const [inspirationImages, setInspirationImages] = useState<UploadImage[]>([]);
   const [referenceImageDescription, setReferenceImageDescription] = useState("");
   const [referenceDescriptionStatus, setReferenceDescriptionStatus] = useState<"idle" | "describing" | "error">("idle");
+  const [hasGeneratedReferenceDescription, setHasGeneratedReferenceDescription] = useState(false);
   const [campaignPrompt, setCampaignPrompt] = useState("");
   const [logoModifierEnabled, setLogoModifierEnabled] = useState(false);
   const [logoModifierPrompt, setLogoModifierPrompt] = useState("");
@@ -122,6 +123,7 @@ function App() {
     if (inspirationImages.length === 0) {
       setReferenceImageDescription("");
       setReferenceDescriptionStatus("idle");
+      setHasGeneratedReferenceDescription(false);
       return;
     }
 
@@ -137,6 +139,7 @@ function App() {
         }
 
         setReferenceImageDescription(description);
+        setHasGeneratedReferenceDescription(true);
         setReferenceDescriptionStatus("idle");
       })
       .catch(() => {
@@ -269,10 +272,13 @@ function App() {
       const preventTextInstruction = preventTextModifierEnabled
         ? "\n\nText prevention modifier: Do not include any readable text, words, letters, numbers, typography, labels, or captions in the generated image, even if text appears in the reference images or the campaign prompt."
         : "";
+      const styleDescriptionInstruction = referenceImageDescription.trim()
+        ? `\n\nStyle description extracted from reference images:\n${referenceImageDescription.trim()}`
+        : "";
       const nextConcepts = await generateConcepts({
         logo: logoModifierEnabled ? logo?.dataUrl ?? null : null,
         inspirationImages: inspirationImages.map((image) => image.dataUrl),
-        campaignPrompt: `${campaignPrompt}${logoInstruction}${orientationInstruction}${preventTextInstruction}`,
+        campaignPrompt: `${campaignPrompt}${styleDescriptionInstruction}${logoInstruction}${orientationInstruction}${preventTextInstruction}`,
       });
       setConcepts(nextConcepts);
       setStatus("success");
@@ -376,7 +382,7 @@ function App() {
             </section>
           ) : null}
 
-          {referenceDescriptionStatus === "idle" && referenceImageDescription ? (
+          {referenceDescriptionStatus === "idle" && inspirationImages.length > 0 && hasGeneratedReferenceDescription ? (
             <section className="reference-description-section">
               <div className="section-heading reference-description-heading">
                 <div className="reference-description-title">
@@ -391,7 +397,7 @@ function App() {
                 ref={referenceDescriptionRef}
                 id="reference-description"
                 value={geminiReferenceDescriptionHook.value}
-                readOnly
+                onChange={(event) => geminiReferenceDescriptionHook.setDescription(event.target.value)}
                 data-gemini-hook="reference-image-description"
                 placeholder="Description of style"
                 aria-label="Gemini reference image description"
@@ -518,7 +524,7 @@ function App() {
             disabled={status === "generating"}
             onClick={handleGenerate}
           >
-            {status === "generating" ? "Creating..." : concepts.length ? "Regenerate" : "Create"}
+            {status === "generating" ? "Creating..." : concepts.length ? "Recreate" : "Create"}
           </button>
           {generationErrorMessage ? (
             <p className="generation-error" role="alert">
