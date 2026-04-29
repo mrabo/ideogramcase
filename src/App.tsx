@@ -448,8 +448,8 @@ function App() {
       <main className="app-shell">
       <header className="hero">
         <HeaderParticles />
-        <h1>BrandSeed</h1>
-        <p>Create unique brand-aligned imagery</p>
+        <h1>BrandShot</h1>
+        <p>Campaign imagery, without the shoot</p>
       </header>
 
       <section className="workspace" aria-label="Campaign image generator">

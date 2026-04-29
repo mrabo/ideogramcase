@@ -1,7 +1,7 @@
-# Project Brief: BrandSeed
+# Project Brief: BrandShot
 
 ## Overview
-BrandSeed is a specialized web application designed for small business owners to generate high-quality, on-brand campaign imagery using their own brand assets and inspiration. The tool prioritizes a delightful, non-technical, and highly tactile interface.
+BrandShot is a specialized web application designed for small business owners to generate high-quality, on-brand campaign imagery using their own brand assets and inspiration. The tool prioritizes a delightful, non-technical, and highly tactile interface.
 
 ## Core Objective
 To provide a simple single-screen experience where users can transform a logo and reference images into professional campaign visuals, shielded from the complexity of the underlying technology.
@@ -13,7 +13,7 @@ To provide a simple single-screen experience where users can transform a logo an
 
 ## Key Features & User Flow
 The application is a single-page interface with a linear, focused flow:
-1.  **Hand-Crafted Branding**: A prominent, eye-catching header featuring the BrandSeed wordmark and subtitle, backed by hand-illustrated, animated floral graphics with a "boiling lines" effect.
+1.  **Hand-Crafted Branding**: A prominent, eye-catching header featuring the BrandShot wordmark and subtitle, backed by hand-illustrated, animated floral graphics with a "boiling lines" effect.
 2.  **Brand Identity Upload**: A clear area for users to drag and drop or upload their business logo, accompanied by helpful descriptive text.
 3.  **Visual Inspiration**: A separate upload section for up to five reference images, with guidance on how these images influence the final output.
 4.  **Creative Intent**: A simple, friendly text field for users to describe the campaign image they envision.
