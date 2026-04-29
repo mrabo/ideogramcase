@@ -3,9 +3,10 @@ import { pathToFileURL } from "node:url";
 
 const DEFAULT_MODEL = "gemini-2.5-flash";
 const REFERENCE_DESCRIPTION_PROMPT = [
-  "Look at the uploaded images and write a paragraph describing the visual characteristics of them.",
-  "The description should help an image generator create new images in a similar style.",
-  "Do not include Markdown formatting for headings, bold text, italics.",
+  "Look at the uploaded images and describe their shared visual style as concise bullet points.",
+  "Write 4 to 6 bullets, each starting with '- '.",
+  "Focus on visual qualities that help create new images in a similar style: color palette, lighting, composition, textures, mood, subject treatment, and graphic details.",
+  "Do not include headings, numbered lists, bold text, italics, introductions, or conclusions.",
 ].join(" ");
 
 async function loadGoogleGenAI() {

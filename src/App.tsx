@@ -294,22 +294,24 @@ function App() {
         <div className="creative-grid">
           <div className="panel inspiration-panel">
             <div className="section-heading">
-              <span>Brand style references</span>
-              <p>Select up to five images that capture your desired visual style.</p>
+              <span>Style references</span>
+              <p>Select images that capture your visual style.</p>
             </div>
 
-            <div className="reference-upload-stack">
-              <button
-                className="drop-zone reference-drop"
-                type="button"
-                onClick={() => inspirationInputRef.current?.click()}
-                onDragOver={(event) => event.preventDefault()}
-                onDrop={handleInspirationDrop}
-                aria-label="Upload reference images"
-              >
-                <UploadIcon />
-                <strong>Drag & drop reference images (up to 5)</strong>
-              </button>
+            <div className={`reference-upload-stack ${inspirationImages.length >= MAX_INSPIRATION_IMAGES ? "is-full" : ""}`}>
+              {inspirationImages.length < MAX_INSPIRATION_IMAGES ? (
+                <button
+                  className="drop-zone reference-drop"
+                  type="button"
+                  onClick={() => inspirationInputRef.current?.click()}
+                  onDragOver={(event) => event.preventDefault()}
+                  onDrop={handleInspirationDrop}
+                  aria-label="Upload reference images"
+                >
+                  <UploadIcon />
+                  <strong>Drag & drop reference images (up to 5)</strong>
+                </button>
+              ) : null}
 
               <div className="inspiration-grid">
                 {inspirationSlots.map((image, index) =>
@@ -351,7 +353,7 @@ function App() {
           <div className="prompt-section prompt-panel">
             <div className="section-heading prompt-heading">
               <label htmlFor="campaign-prompt">Your Image</label>
-              <p>Describe your new image – the brand styling will be applied.</p>
+              <p>Describe what's in your image (the brand styling will be applied).</p>
             </div>
             <textarea
               id="campaign-prompt"
@@ -363,29 +365,39 @@ function App() {
         </div>
 
         <div className="style-modifiers-grid prompt-section">
-          <section className="reference-description-section">
-            <div className="section-heading reference-description-heading">
-              <div className="reference-description-title">
-                <span>Style applied</span>
-                {referenceDescriptionStatus === "describing" ? <span className="reference-description-spinner" aria-label="Loading" /> : null}
-                {referenceDescriptionStatus === "idle" && referenceImageDescription ? (
+          {referenceDescriptionStatus === "describing" ? (
+            <section className="reference-description-section reference-description-loading" aria-live="polite">
+              <div className="section-heading reference-description-heading">
+                <div className="reference-description-title">
+                  <span>Determining style</span>
+                  <span className="reference-description-spinner" aria-label="Loading" />
+                </div>
+              </div>
+            </section>
+          ) : null}
+
+          {referenceDescriptionStatus === "idle" && referenceImageDescription ? (
+            <section className="reference-description-section">
+              <div className="section-heading reference-description-heading">
+                <div className="reference-description-title">
+                  <span>Style description</span>
                   <span aria-label="Complete">
                     <CheckIcon />
                   </span>
-                ) : null}
+                </div>
+                <p>The description of the style generated from your reference images. It will be used to create your new images – feel free to adjust.</p>
               </div>
-              <p>The description of the style in your reference images that will be used to create your new images – feel free to adjust.</p>
-            </div>
-            <textarea
-              ref={referenceDescriptionRef}
-              id="reference-description"
-              value={geminiReferenceDescriptionHook.value}
-              readOnly
-              data-gemini-hook="reference-image-description"
-              placeholder="Description of style"
-              aria-label="Gemini reference image description"
-            />
-          </section>
+              <textarea
+                ref={referenceDescriptionRef}
+                id="reference-description"
+                value={geminiReferenceDescriptionHook.value}
+                readOnly
+                data-gemini-hook="reference-image-description"
+                placeholder="Description of style"
+                aria-label="Gemini reference image description"
+              />
+            </section>
+          ) : null}
 
           <section className="modifiers-section">
             <div className="section-heading">
@@ -500,7 +512,12 @@ function App() {
         <input ref={logoInputRef} className="hidden-input" type="file" accept="image/*,.svg" onChange={handleLogoInput} />
 
         <div className="action-row">
-          <button className="generate-button" type="button" disabled={status === "generating"} onClick={handleGenerate}>
+          <button
+            className={`generate-button ${status === "generating" ? "is-generating" : ""}`}
+            type="button"
+            disabled={status === "generating"}
+            onClick={handleGenerate}
+          >
             {status === "generating" ? "Generating..." : concepts.length ? "Regenerate" : "Generate"}
           </button>
           {generationErrorMessage ? (
