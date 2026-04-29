@@ -395,6 +395,12 @@ function App() {
     setGenerationErrorMessage("");
   }
 
+  function clearLogo() {
+    setLogo(null);
+    setStatus("idle");
+    setGenerationErrorMessage("");
+  }
+
   async function handleGenerate() {
     if (!campaignPrompt.trim()) {
       setStatus("error");
@@ -570,26 +576,41 @@ function App() {
 
                 {logoModifierEnabled ? (
                   <div className="modifier-active-content logo-modifier-content">
-                    <button
-                      className={`drop-zone modifier-logo-drop ${logo ? "has-image" : ""}`}
-                      type="button"
-                      onClick={() => logoInputRef.current?.click()}
-                      onDragOver={(event) => event.preventDefault()}
-                      onDrop={handleLogoDrop}
-                      aria-label="Upload logo for modifier"
-                    >
+                    <div className="modifier-logo-upload">
+                      <button
+                        className={`drop-zone modifier-logo-drop ${logo ? "has-image" : ""}`}
+                        type="button"
+                        onClick={() => logoInputRef.current?.click()}
+                        onDragOver={(event) => event.preventDefault()}
+                        onDrop={handleLogoDrop}
+                        aria-label="Upload logo for modifier"
+                      >
+                        {logo ? (
+                          <>
+                            <img src={logo.dataUrl} alt={logo.name} />
+                            <span className="file-name">{logo.name}</span>
+                          </>
+                        ) : (
+                          <>
+                            <UploadIcon />
+                            <strong>Drag & drop logo</strong>
+                          </>
+                        )}
+                      </button>
                       {logo ? (
-                        <>
-                          <img src={logo.dataUrl} alt={logo.name} />
-                          <span className="file-name">{logo.name}</span>
-                        </>
-                      ) : (
-                        <>
-                          <UploadIcon />
-                          <strong>Drag & drop logo</strong>
-                        </>
-                      )}
-                    </button>
+                        <button
+                          className="modifier-logo-clear-button"
+                          type="button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            clearLogo();
+                          }}
+                          aria-label="Remove logo"
+                        >
+                          <RemoveImageIcon />
+                        </button>
+                      ) : null}
+                    </div>
                     <textarea
                       className="modifier-textarea"
                       value={logoModifierPrompt}
