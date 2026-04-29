@@ -8,6 +8,13 @@ type UploadImage = {
 };
 
 const MAX_INSPIRATION_IMAGES = 5;
+type OrientationOption = "landscape-4-3" | "landscape-16-9" | "vertical-9-16";
+
+const ORIENTATION_PROMPTS: Record<OrientationOption, string> = {
+  "landscape-4-3": "landscape orientation with a 4:3 aspect ratio",
+  "landscape-16-9": "landscape orientation with a 16:9 aspect ratio",
+  "vertical-9-16": "vertical orientation with a 9:16 aspect ratio",
+};
 
 function fileToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -76,7 +83,7 @@ function App() {
   const [logoModifierEnabled, setLogoModifierEnabled] = useState(false);
   const [logoModifierPrompt, setLogoModifierPrompt] = useState("");
   const [orientationModifierEnabled, setOrientationModifierEnabled] = useState(false);
-  const [orientation, setOrientation] = useState<"landscape" | "vertical">("landscape");
+  const [orientation, setOrientation] = useState<OrientationOption>("landscape-4-3");
   const [concepts, setConcepts] = useState<Concept[]>([]);
   const [selectedConcept, setSelectedConcept] = useState<{ imageUrl: string; alt: string } | null>(null);
   const [status, setStatus] = useState<"idle" | "generating" | "success" | "error">("idle");
@@ -247,10 +254,13 @@ function App() {
       const logoInstruction = logoModifierEnabled && logoModifierPrompt.trim()
         ? `\n\nLogo modifier: ${logoModifierPrompt.trim()}`
         : "";
+      const orientationInstruction = orientationModifierEnabled
+        ? `\n\nOrientation modifier: Create the image in ${ORIENTATION_PROMPTS[orientation]}.`
+        : "";
       const nextConcepts = await generateConcepts({
         logo: logoModifierEnabled ? logo?.dataUrl ?? null : null,
         inspirationImages: inspirationImages.map((image) => image.dataUrl),
-        campaignPrompt: `${campaignPrompt}${logoInstruction}`,
+        campaignPrompt: `${campaignPrompt}${logoInstruction}${orientationInstruction}`,
       });
       setConcepts(nextConcepts);
       setStatus("success");
@@ -430,21 +440,31 @@ function App() {
                       <input
                         type="radio"
                         name="orientation"
-                        value="landscape"
-                        checked={orientation === "landscape"}
-                        onChange={() => setOrientation("landscape")}
+                        value="landscape-4-3"
+                        checked={orientation === "landscape-4-3"}
+                        onChange={() => setOrientation("landscape-4-3")}
                       />
-                      <span>Landscape</span>
+                      <span>Landscape (4:3)</span>
                     </label>
                     <label>
                       <input
                         type="radio"
                         name="orientation"
-                        value="vertical"
-                        checked={orientation === "vertical"}
-                        onChange={() => setOrientation("vertical")}
+                        value="landscape-16-9"
+                        checked={orientation === "landscape-16-9"}
+                        onChange={() => setOrientation("landscape-16-9")}
                       />
-                      <span>Vertical</span>
+                      <span>Landscape (16:9)</span>
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="orientation"
+                        value="vertical-9-16"
+                        checked={orientation === "vertical-9-16"}
+                        onChange={() => setOrientation("vertical-9-16")}
+                      />
+                      <span>Vertical (9:16)</span>
                     </label>
                   </div>
                 ) : null}
