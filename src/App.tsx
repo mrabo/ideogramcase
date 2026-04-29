@@ -73,6 +73,10 @@ function App() {
   const [referenceImageDescription, setReferenceImageDescription] = useState("");
   const [referenceDescriptionStatus, setReferenceDescriptionStatus] = useState<"idle" | "describing" | "error">("idle");
   const [campaignPrompt, setCampaignPrompt] = useState("");
+  const [logoModifierEnabled, setLogoModifierEnabled] = useState(false);
+  const [logoModifierPrompt, setLogoModifierPrompt] = useState("");
+  const [orientationModifierEnabled, setOrientationModifierEnabled] = useState(false);
+  const [orientation, setOrientation] = useState<"landscape" | "vertical">("landscape");
   const [concepts, setConcepts] = useState<Concept[]>([]);
   const [selectedConcept, setSelectedConcept] = useState<{ imageUrl: string; alt: string } | null>(null);
   const [status, setStatus] = useState<"idle" | "generating" | "success" | "error">("idle");
@@ -332,29 +336,119 @@ function App() {
           </div>
         </div>
 
-        <section className="prompt-section reference-description-section">
-          <div className="section-heading reference-description-heading">
-            <div className="reference-description-title">
-              <span>Style applied</span>
-              {referenceDescriptionStatus === "describing" ? <span className="reference-description-spinner" aria-label="Loading" /> : null}
-              {referenceDescriptionStatus === "idle" && referenceImageDescription ? (
-                <span aria-label="Complete">
-                  <CheckIcon />
-                </span>
-              ) : null}
+        <div className="style-modifiers-grid prompt-section">
+          <section className="reference-description-section">
+            <div className="section-heading reference-description-heading">
+              <div className="reference-description-title">
+                <span>Style applied</span>
+                {referenceDescriptionStatus === "describing" ? <span className="reference-description-spinner" aria-label="Loading" /> : null}
+                {referenceDescriptionStatus === "idle" && referenceImageDescription ? (
+                  <span aria-label="Complete">
+                    <CheckIcon />
+                  </span>
+                ) : null}
+              </div>
+              <p>The description of the style in your reference images that will be used to create your new images – feel free to adjust.</p>
             </div>
-            <p>The description of the style in your reference images that will be used to create your new images – feel free to adjust.</p>
-          </div>
-          <textarea
-            ref={referenceDescriptionRef}
-            id="reference-description"
-            value={geminiReferenceDescriptionHook.value}
-            readOnly
-            data-gemini-hook="reference-image-description"
-            placeholder="Description of style"
-            aria-label="Gemini reference image description"
-          />
-        </section>
+            <textarea
+              ref={referenceDescriptionRef}
+              id="reference-description"
+              value={geminiReferenceDescriptionHook.value}
+              readOnly
+              data-gemini-hook="reference-image-description"
+              placeholder="Description of style"
+              aria-label="Gemini reference image description"
+            />
+          </section>
+
+          <section className="modifiers-section">
+            <div className="section-heading">
+              <span>Modifiers</span>
+              <p>Specify additional details for your image.</p>
+            </div>
+
+            <div className="modifier-list">
+              <div className={`modifier-item ${logoModifierEnabled ? "is-active" : ""}`}>
+                <label className="modifier-toggle">
+                  <input
+                    type="checkbox"
+                    checked={logoModifierEnabled}
+                    onChange={(event) => setLogoModifierEnabled(event.target.checked)}
+                  />
+                  <span>Logo</span>
+                </label>
+
+                {logoModifierEnabled ? (
+                  <div className="modifier-active-content logo-modifier-content">
+                    <button
+                      className={`drop-zone modifier-logo-drop ${logo ? "has-image" : ""}`}
+                      type="button"
+                      onClick={() => logoInputRef.current?.click()}
+                      onDragOver={(event) => event.preventDefault()}
+                      onDrop={handleLogoDrop}
+                      aria-label="Upload logo for modifier"
+                    >
+                      {logo ? (
+                        <>
+                          <img src={logo.dataUrl} alt={logo.name} />
+                          <span className="file-name">{logo.name}</span>
+                        </>
+                      ) : (
+                        <>
+                          <UploadIcon />
+                          <strong>Drag & drop logo</strong>
+                        </>
+                      )}
+                    </button>
+                    <textarea
+                      className="modifier-textarea"
+                      value={logoModifierPrompt}
+                      placeholder="Describe how to use the logo"
+                      onChange={(event) => setLogoModifierPrompt(event.target.value)}
+                      aria-label="Logo modifier instructions"
+                    />
+                  </div>
+                ) : null}
+              </div>
+
+              <div className={`modifier-item ${orientationModifierEnabled ? "is-active" : ""}`}>
+                <label className="modifier-toggle">
+                  <input
+                    type="checkbox"
+                    checked={orientationModifierEnabled}
+                    onChange={(event) => setOrientationModifierEnabled(event.target.checked)}
+                  />
+                  <span>Orientation</span>
+                </label>
+
+                {orientationModifierEnabled ? (
+                  <div className="modifier-active-content orientation-options" role="radiogroup" aria-label="Image orientation">
+                    <label>
+                      <input
+                        type="radio"
+                        name="orientation"
+                        value="landscape"
+                        checked={orientation === "landscape"}
+                        onChange={() => setOrientation("landscape")}
+                      />
+                      <span>Landscape</span>
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="orientation"
+                        value="vertical"
+                        checked={orientation === "vertical"}
+                        onChange={() => setOrientation("vertical")}
+                      />
+                      <span>Vertical</span>
+                    </label>
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          </section>
+        </div>
 
         <div className="logo-row">
           <div className="panel logo-panel">

@@ -32,6 +32,7 @@ body {
 }
 
 button,
+input,
 textarea {
   font: inherit;
 }
@@ -95,7 +96,7 @@ button {
 }
 
 .section-heading span,
-.prompt-section label,
+.prompt-heading label,
 .reference-description-title,
 .divider-title h2 {
   display: block;
@@ -330,7 +331,7 @@ textarea {
   margin-top: 48px;
 }
 
-.prompt-section label {
+.prompt-heading label {
   display: block;
 }
 
@@ -340,6 +341,13 @@ textarea {
 
 .prompt-heading {
   padding: 0 8px;
+}
+
+.style-modifiers-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.9fr) minmax(420px, 1.1fr);
+  gap: 56px;
+  align-items: start;
 }
 
 .reference-description-heading {
@@ -407,6 +415,92 @@ textarea::placeholder {
 .reference-description-section textarea {
   overflow: hidden;
   resize: none;
+}
+
+.modifier-list {
+  display: grid;
+  gap: 26px;
+  padding-top: 4px;
+}
+
+.modifier-item {
+  display: grid;
+  gap: 14px;
+}
+
+.modifier-toggle,
+.orientation-options label {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  width: fit-content;
+  color: #24272b;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.modifier-toggle input,
+.orientation-options input {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--primary);
+}
+
+.modifier-active-content {
+  margin-left: 34px;
+}
+
+.logo-modifier-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.modifier-logo-drop {
+  min-height: 52px;
+  border-radius: 16px;
+  padding: 12px 16px;
+  gap: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modifier-logo-drop .upload-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.modifier-logo-drop strong {
+  font-size: 0.86rem;
+}
+
+.modifier-logo-drop img {
+  max-width: 86%;
+  max-height: 34px;
+  object-fit: contain;
+}
+
+.modifier-textarea {
+  min-height: 104px;
+  border-radius: 16px;
+  padding: 18px 20px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.orientation-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 36px;
+}
+
+.orientation-options label {
+  color: var(--ink-soft);
+  font-size: 0.94rem;
+  font-weight: 600;
 }
 
 .action-row {
@@ -571,6 +665,15 @@ textarea::placeholder {
 
   .creative-grid {
     gap: 32px;
+  }
+
+  .style-modifiers-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .logo-modifier-content {
+    grid-template-columns: 1fr;
   }
 
   .creative-grid .section-heading {
